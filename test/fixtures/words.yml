@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  verse: one
+  word_order: 1
+  strong_number: MyText
+  greek_word: MyText
+  greek_grammar: MyText
+  spanish_translation: MyText
+
+two:
+  verse: two
+  word_order: 1
+  strong_number: MyText
+  greek_word: MyText
+  greek_grammar: MyText
+  spanish_translation: MyText

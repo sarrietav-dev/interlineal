@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyText
+  abbreviation: MyText
+  testament: MyText
+
+two:
+  name: MyText
+  abbreviation: MyText
+  testament: MyText

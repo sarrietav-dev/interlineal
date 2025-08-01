@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  strong_number: MyText
+  greek_word: MyText
+  pronunciation: MyText
+  definition: MyText
+  definition2: MyText
+  part_of_speech: MyText
+  derivation: MyText
+  rv1909_definition: MyText
+  rv1909_word_count: MyText
+
+two:
+  strong_number: MyText
+  greek_word: MyText
+  pronunciation: MyText
+  definition: MyText
+  definition2: MyText
+  part_of_speech: MyText
+  derivation: MyText
+  rv1909_definition: MyText
+  rv1909_word_count: MyText
