@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= @verse.full_reference %> - Presentación</title>
+  <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      cursor: none;
+    }
+    
+    .slideshow-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .verse-reference {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      line-height: 1.2;
+    }
+    
+    .spanish-text {
+      font-size: clamp(1.5rem, 4vw, 3.5rem);
+      line-height: 1.6;
+      max-width: 90vw;
+      margin-bottom: 3rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      font-weight: 400;
+    }
+    
+    .interlinear-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem;
+      max-width: 95vw;
+      margin-bottom: 2rem;
+    }
+    
+    .word-box {
+      background: rgba(55, 65, 81, 0.8);
+      border: 2px solid rgba(156, 163, 175, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .word-box:hover {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .greek-word {
+      font-size: clamp(1.2rem, 2.5vw, 2rem);
+      color: #7dd3fc;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    .spanish-word {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      color: white;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    .strong-number {
+      font-size: clamp(0.7rem, 1.2vw, 1rem);
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.2);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 0.25rem;
+    }
+    
+    .controls {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
+    
+    .controls.visible {
+      opacity: 1;
+    }
+    
+    .control-btn {
+      background: rgba(59, 130, 246, 0.9);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .control-btn:hover {
+      background: rgba(59, 130, 246, 1);
+      transform: translateY(-2px);
+    }
+    
+    .control-btn:disabled {
+      background: rgba(107, 114, 128, 0.5);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .navigation-hint {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .navigation-hint.visible {
+      opacity: 1;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .slideshow-container {
+        padding: 1rem;
+      }
+      
+      .interlinear-display {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+      }
+      
+      .word-box {
+        padding: 0.75rem;
+      }
+    }
+    
+    @media (min-width: 1920px) {
+      .interlinear-display {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 3rem;
+      }
+    }
+  </style>
+</head>
+  <body data-controller="slideshow" 
+        data-action="mousemove->slideshow#mousemove keydown@document->slideshow#keydown">
+  <div class="slideshow-container">
+    <!-- Verse Reference -->
+    <h1 class="verse-reference">
+      <%= @verse.full_reference %>
+    </h1>
+    
+    <!-- Spanish Text -->
+    <% if @spanish_text.present? %>
+      <div class="spanish-text">
+        <%= @spanish_text %>
+      </div>
+    <% end %>
+    
+    <!-- Interlinear Display -->
+    <% if @words.present? %>
+      <div class="interlinear-display">
+        <% @words.each do |word| %>
+          <div class="word-box">
+            <div class="greek-word">
+              <%= word.greek_word.present? ? word.greek_word : '—' %>
+            </div>
+            <div class="spanish-word">
+              <%= word.spanish_translation.present? ? word.spanish_translation : '—' %>
+            </div>
+            <% if word.strong_number.present? %>
+              <div class="strong-number">
+                G<%= word.strong_number %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Navigation Controls -->
+  <div class="controls" data-slideshow-target="controls">
+    <% if @prev_verse %>
+      <a href="<%= bible_slideshow_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number) %>" 
+         class="control-btn" title="<%= t('navigation.previous_verse') %>"
+         data-slideshow-nav="prev">
+        ◄ <%= t('bible.verse') %> <%= @prev_verse.verse_number %>
+      </a>
+    <% elsif @prev_chapter %>
+      <% last_verse = @prev_chapter.verses.by_number.last %>
+      <a href="<%= bible_slideshow_path(@book.id, @prev_chapter.chapter_number, last_verse.verse_number) %>" 
+         class="control-btn" title="<%= t('navigation.previous_chapter') %>"
+         data-slideshow-nav="prev">
+        ◄ <%= @prev_chapter.chapter_number %>:<%= last_verse.verse_number %>
+      </a>
+    <% else %>
+      <button class="control-btn" disabled data-slideshow-nav="prev">◄ <%= t('navigation.previous') %></button>
+    <% end %>
+    
+    <button class="control-btn" 
+            data-action="click->slideshow#toggleFullscreen" 
+            title="<%= t('slideshow.fullscreen') %>">
+      🖥️ <%= t('slideshow.fullscreen') %>
+    </button>
+    
+    <a href="<%= bible_verse_path(@book.id, @chapter.chapter_number, @verse.verse_number) %>" 
+       class="control-btn" title="<%= t('slideshow.exit') %>"
+       data-slideshow-nav="exit">
+      ✕ <%= t('slideshow.exit') %>
+    </a>
+    
+    <% if @next_verse %>
+      <a href="<%= bible_slideshow_path(@book.id, @chapter.chapter_number, @next_verse.verse_number) %>" 
+         class="control-btn" title="<%= t('navigation.next_verse') %>"
+         data-slideshow-nav="next">
+        <%= t('bible.verse') %> <%= @next_verse.verse_number %> ►
+      </a>
+    <% elsif @next_chapter %>
+      <a href="<%= bible_slideshow_path(@book.id, @next_chapter.chapter_number, 1) %>" 
+         class="control-btn" title="<%= t('navigation.next_chapter') %>"
+         data-slideshow-nav="next">
+        <%= @next_chapter.chapter_number %>:1 ►
+      </a>
+    <% else %>
+      <button class="control-btn" disabled data-slideshow-nav="next"><%= t('navigation.next') %> ►</button>
+    <% end %>
+  </div>
+  
+  <!-- Navigation Hint -->
+  <div class="navigation-hint" data-slideshow-target="hints">
+    <%= t('slideshow.navigation_hint') %>
+  </div>
+  
+  <!-- All slideshow functionality is now handled by Stimulus controller -->
+</body>
+</html>

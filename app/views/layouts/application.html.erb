@@ -22,8 +22,25 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-900 text-white min-h-screen">
+    <!-- Language Switcher -->
+    <div class="bg-gray-800 border-b border-gray-700">
+      <div class="container mx-auto px-4 lg:px-8 py-2 flex justify-between items-center">
+        <span class="text-sm lg:text-base text-gray-400">
+          <%= t('app.name') %>
+        </span>
+        <div class="flex items-center gap-2">
+          <%= link_to "ES", 
+              request.fullpath + (request.query_string.present? ? "&locale=es" : "?locale=es"),
+              class: "px-2 py-1 rounded text-xs lg:text-sm #{I18n.locale == :es ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'} transition-colors" %>
+          <%= link_to "EN", 
+              request.fullpath + (request.query_string.present? ? "&locale=en" : "?locale=en"),
+              class: "px-2 py-1 rounded text-xs lg:text-sm #{I18n.locale == :en ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'} transition-colors" %>
+        </div>
+      </div>
+    </div>
+    
+    <main class="container mx-auto px-4 lg:px-8 py-4 lg:py-6 max-w-7xl">
       <%= yield %>
     </main>
   </body>

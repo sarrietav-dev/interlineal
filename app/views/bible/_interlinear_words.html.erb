@@ -1,0 +1,152 @@
+<!-- Interlinear Words Display - Optimized for TV screens -->
+<div id="interlinear-words" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 lg:gap-6 mt-6 lg:mt-8">
+  <% 
+    # Use passed settings or fallback to defaults
+    settings ||= {
+      'show_greek' => true,
+      'show_spanish' => true,
+      'show_strongs' => true,
+      'show_grammar' => true,
+      'show_pronunciation' => false,
+      'show_word_order' => false
+    }
+  %>
+  <% words.each_with_index do |word, word_index| %>
+    <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg p-3 lg:p-4 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400"
+         <% if word.strong_number.present? %>
+           data-action="click->strongs#show"
+           data-strong-number="<%= word.strong_number %>"
+           title="<%= t('tv.strongs_help') %>"
+           tabindex="0"
+         <% else %>
+           title="<%= t('messages.no_data') %>"
+         <% end %>>
+      
+      <!-- Greek Word -->
+      <% if settings['show_greek'] %>
+        <div class="greek-word mb-2 lg:mb-3">
+          <% if word.greek_word.present? %>
+            <span class="block text-sm lg:text-xl xl:text-2xl font-medium text-sky-300 leading-tight">
+              <%= word.greek_word %>
+            </span>
+          <% else %>
+            <span class="block text-sm lg:text-xl xl:text-2xl font-medium text-gray-400 leading-tight">—</span>
+          <% end %>
+        </div>
+      <% end %>
+      
+      <!-- Spanish Translation -->
+      <% if settings['show_spanish'] %>
+        <div class="spanish-word mb-2 lg:mb-3">
+          <% if word.spanish_translation.present? %>
+            <span class="block text-sm lg:text-lg xl:text-xl font-normal text-white leading-tight">
+              <%= word.spanish_translation %>
+            </span>
+          <% else %>
+            <span class="block text-sm lg:text-lg xl:text-xl font-normal text-gray-400 leading-tight">—</span>
+          <% end %>
+        </div>
+      <% end %>
+      
+      <!-- Strong's Number and Grammar -->
+      <div class="metadata space-y-1">
+        <% if settings['show_strongs'] && word.strong_number.present? %>
+          <div class="strong-number">
+            <span class="inline-block bg-yellow-600 text-yellow-100 text-xs lg:text-sm font-semibold px-2 py-1 rounded-md leading-none">
+              G<%= word.strong_number %>
+            </span>
+          </div>
+        <% end %>
+        
+        <% if settings['show_grammar'] && word.greek_grammar.present? %>
+          <div class="grammar">
+            <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              <%= word.greek_grammar.truncate(10) %>
+            </span>
+          </div>
+        <% end %>
+        
+        <% if settings['show_pronunciation'] && word.respond_to?(:pronunciation) && word.pronunciation.present? %>
+          <div class="pronunciation">
+            <span class="inline-block bg-purple-600 text-purple-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              /<%= word.pronunciation %>/
+            </span>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Word Order -->
+      <% if settings['show_word_order'] %>
+        <div class="word-order mt-2 lg:mt-3">
+          <span class="text-xs text-gray-500 font-mono">
+            #<%= word.word_order %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Empty state if no words -->
+<% if words.empty? %>
+  <div class="text-center py-12 lg:py-16">
+    <div class="text-gray-400 text-lg lg:text-2xl">
+      <p class="mb-4"><%= t('messages.no_interlinear') %></p>
+      <p class="text-base lg:text-xl"><%= t('messages.spanish_only') %></p>
+    </div>
+  </div>
+<% end %>
+
+<!-- Instructions for TV display -->
+<div class="mt-8 lg:mt-12 p-4 lg:p-6 bg-gray-700 rounded-lg border border-gray-600">
+  <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3 lg:mb-4">📺 <%= t('tv.instructions') %></h3>
+  <div class="text-sm lg:text-base text-gray-300 space-y-2 lg:space-y-3">
+    <p><strong><%= t('navigation.navigation') %>:</strong> <%= t('tv.navigation_help') %></p>
+    <p><strong><%= t('bible.slideshow') %>:</strong> <%= t('tv.slideshow_help') %></p>
+    <p><strong>Strong's:</strong> <%= t('tv.strongs_help') %></p>
+    <p><strong><%= t('keyboard_shortcuts') %>:</strong> <%= t('tv.keyboard_help') %></p>
+  </div>
+</div>
+
+<style>
+  /* Additional TV-optimized styling */
+  .interlinear-word:focus {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+  }
+  
+  @media (min-width: 1920px) {
+    .greek-word span {
+      font-size: 1.75rem;
+    }
+    .spanish-word span {
+      font-size: 1.5rem;
+    }
+    .strong-number span,
+    .grammar span {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .interlinear-word {
+      min-height: 120px;
+    }
+  }
+  
+  /* High contrast mode for better TV visibility */
+  @media (prefers-contrast: high) {
+    .interlinear-word {
+      border-width: 2px;
+      border-color: #ffffff;
+    }
+    .greek-word span {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .spanish-word span {
+      color: #ffffff;
+      font-weight: 500;
+    }
+  }
+</style>

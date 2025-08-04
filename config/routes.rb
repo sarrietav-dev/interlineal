@@ -9,6 +9,30 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Bible Application Routes
+  root "bible#index"
+
+  # Main Bible interface routes
+  get "books/:book_id", to: "bible#show_book", as: :bible_book
+  get "books/:book_id/chapters/:chapter_number", to: "bible#show_chapter", as: :bible_chapter
+  get "books/:book_id/chapters/:chapter_number/verses/:verse_number", to: "bible#show_verse", as: :bible_verse
+
+  # Slideshow/Presentation mode
+  get "slideshow/:book_id/:chapter_number/:verse_number", to: "bible#slideshow", as: :bible_slideshow
+
+  # Interlinear text partial (for AJAX loading)
+  get "books/:book_id/chapters/:chapter_number/verses/:verse_number/interlinear", to: "bible#interlinear", as: :bible_interlinear
+
+  # Search functionality
+  get "search", to: "bible#search", as: :bible_search
+
+  # Strong's concordance definitions
+  get "strongs/:strong_number", to: "bible#strong_definition", as: :strong_definition
+
+  # Settings management with Turbo
+  resource :settings, only: [:show, :update] do
+    patch :reset, on: :member
+  end
+
+  # Hotwire-based interactions - no API needed
 end

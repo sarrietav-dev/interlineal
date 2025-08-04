@@ -1,0 +1,172 @@
+<!-- Strong's Definition Display - TV Optimized -->
+<turbo-frame id="strong-definition">
+<div class="strong-definition-content">
+  <!-- Header -->
+  <div class="mb-4 lg:mb-6 pb-4 lg:pb-6 border-b border-gray-600">
+    <h2 class="text-xl lg:text-3xl font-bold text-yellow-400 mb-2">
+      Strong's <%= strong.display_number %>
+    </h2>
+    <h3 class="text-lg lg:text-2xl font-semibold text-sky-300 mb-2">
+      <%= strong.greek_word %>
+    </h3>
+    <% if strong.pronunciation.present? %>
+      <p class="text-base lg:text-xl text-gray-300 italic">
+        Pronunciación: <%= strong.pronunciation %>
+      </p>
+    <% end %>
+  </div>
+  
+  <!-- Main Definition -->
+  <div class="mb-4 lg:mb-6">
+    <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">Definición:</h4>
+    <div class="text-base lg:text-lg text-gray-200 leading-relaxed space-y-2">
+      <% if strong.definition.present? %>
+        <p><%= strong.definition %></p>
+      <% end %>
+      <% if strong.definition2.present? %>
+        <p class="text-gray-300"><%= strong.definition2 %></p>
+      <% end %>
+      <% if strong.definition.blank? && strong.definition2.blank? %>
+        <p class="text-gray-400 italic">No hay definición disponible.</p>
+      <% end %>
+    </div>
+  </div>
+  
+  <!-- Grammatical Information -->
+  <% if strong.part_of_speech.present? %>
+    <div class="mb-4 lg:mb-6">
+      <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">Información Gramatical:</h4>
+      <span class="inline-block bg-blue-600 text-blue-100 px-3 py-1 rounded-lg text-sm lg:text-base font-medium">
+        <%= strong.part_of_speech %>
+      </span>
+    </div>
+  <% end %>
+  
+  <!-- Etymology/Derivation -->
+  <% if strong.derivation.present? %>
+    <div class="mb-4 lg:mb-6">
+      <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">Etimología:</h4>
+      <p class="text-base lg:text-lg text-gray-300 leading-relaxed">
+        <%= strong.derivation %>
+      </p>
+    </div>
+  <% end %>
+  
+  <!-- Reina Valera 1909 Definition (if available) -->
+  <% if strong.rv1909_definition.present? %>
+    <div class="mb-4 lg:mb-6">
+      <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">Definición RV1909:</h4>
+      <p class="text-base lg:text-lg text-gray-300 leading-relaxed">
+        <%= strong.rv1909_definition %>
+      </p>
+    </div>
+  <% end %>
+  
+  <!-- Usage Statistics -->
+  <div class="mb-4 lg:mb-6">
+    <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">Uso en las Escrituras:</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-gray-700 rounded-lg p-3 lg:p-4">
+        <span class="text-sm lg:text-base text-gray-400">Total de apariciones:</span>
+        <span class="block text-lg lg:text-xl font-semibold text-white">
+          <%= strong.word_count %> <%= strong.word_count == 1 ? 'vez' : 'veces' %>
+        </span>
+      </div>
+      <div class="bg-gray-700 rounded-lg p-3 lg:p-4">
+        <span class="text-sm lg:text-base text-gray-400">En versículos únicos:</span>
+        <span class="block text-lg lg:text-xl font-semibold text-white">
+          <%= verses.count %> <%= verses.count == 1 ? 'versículo' : 'versículos' %>
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sample Verses -->
+  <% if verses.present? %>
+    <div class="mb-4 lg:mb-6">
+      <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
+        Ejemplos de Uso 
+        <span class="text-sm lg:text-base font-normal text-gray-400">
+          (mostrando <%= [verses.count, 5].min %> de <%= verses.count %>)
+        </span>
+      </h4>
+      <div class="space-y-3 lg:space-y-4 max-h-60 lg:max-h-80 overflow-y-auto">
+        <% verses.first(5).each do |verse| %>
+          <div class="bg-gray-700 rounded-lg p-3 lg:p-4 border border-gray-600">
+            <div class="flex items-start justify-between mb-2">
+              <span class="text-sm lg:text-base font-semibold text-yellow-400">
+                <%= verse.full_reference %>
+              </span>
+              <a href="<%= bible_verse_path(verse.book.id, verse.chapter.chapter_number, verse.verse_number) %>" 
+                 class="text-xs lg:text-sm text-blue-400 hover:text-blue-300 underline ml-2"
+                 onclick="closeStrongPopup()">
+                Ver verso →
+              </a>
+            </div>
+            <% if verse.spanish_text.present? %>
+              <p class="text-sm lg:text-base text-gray-200 leading-relaxed">
+                <%= verse.spanish_text.truncate(200) %>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  
+  <!-- Search Related Words -->
+  <div class="text-center mt-4 lg:mt-6 pt-4 lg:pt-6 border-t border-gray-600">
+    <a href="<%= bible_search_path(q: strong.greek_word) %>" 
+       class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-sm lg:text-base transition-colors duration-200"
+       data-action="click->strongs#close">
+      🔍 <%= t('strongs.search_related', word: strong.greek_word) %>
+    </a>
+  </div>
+</div>
+</turbo-frame>
+
+<style>
+  /* Additional styling for better TV readability */
+  .strong-definition-content h4 {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    letter-spacing: 0.025em;
+  }
+  
+  .strong-definition-content p {
+    text-align: justify;
+    hyphens: auto;
+  }
+  
+  /* High contrast adjustments */
+  @media (prefers-contrast: high) {
+    .strong-definition-content {
+      background-color: #000;
+      color: #fff;
+    }
+    
+    .strong-definition-content .bg-gray-700 {
+      background-color: #333;
+      border-color: #666;
+    }
+  }
+  
+  /* Large screen optimizations */
+  @media (min-width: 1920px) {
+    .strong-definition-content h2 {
+      font-size: 2.5rem;
+    }
+    
+    .strong-definition-content h3 {
+      font-size: 2rem;
+    }
+    
+    .strong-definition-content h4 {
+      font-size: 1.5rem;
+    }
+    
+    .strong-definition-content p,
+    .strong-definition-content .text-lg {
+      font-size: 1.25rem;
+    }
+  }
+</style>

@@ -1,0 +1,118 @@
+es:
+  app:
+    name: "Biblia Interlineal"
+    subtitle: "Estudio bíblico palabra por palabra Griego-Español"
+  
+  bible:
+    book: "Libro"
+    books: "Libros"
+    chapter: "Capítulo"
+    chapters: "Capítulos"
+    verse: "Versículo"
+    verses: "Versículos"
+    word: "Palabra"
+    words: "Palabras"
+    search: "Búsqueda"
+    slideshow: "Presentación"
+    slideshow_mode: "Modo Presentación"
+    presentation: "Presentación"
+    home: "Inicio"
+    back_to_home: "Volver al Inicio"
+    
+  navigation:
+    previous: "Anterior"
+    next: "Siguiente"
+    previous_verse: "Versículo anterior"
+    next_verse: "Versículo siguiente"
+    previous_chapter: "Capítulo anterior"
+    next_chapter: "Capítulo siguiente"
+    view_chapter: "Ver Capítulo"
+    view_verse: "Ver Versículo"
+    study: "Estudiar"
+    navigation: "Navegación"
+    back: "Volver"
+    
+  keyboard_shortcuts: "Atajos de teclado"
+    
+  search:
+    title: "Búsqueda en las Escrituras"
+    placeholder: "Buscar por palabra en español, griego, Strong's (ej: G3754) o referencia..."
+    button: "Buscar"
+    results: "Resultados para"
+    result: "resultado"
+    results_plural: "resultados"
+    no_results: "No se encontraron resultados"
+    query_too_short: "Búsqueda muy corta"
+    query_too_short_message: "Por favor, ingrese al menos 2 caracteres para realizar la búsqueda."
+    suggestions: "Sugerencias:"
+    tips: "Consejos de Búsqueda"
+    spanish_example: "Español: amor, fe, esperanza"
+    greek_example: "Griego: ἀγάπη, λόγος, θεός"
+    strongs_example: "Strong's: G26, G3056, G2316"
+    popular_searches: "Búsquedas Populares"
+    matching_words: "Palabras coincidentes:"
+    statistics: "Estadísticas de Búsqueda"
+    coincidences: "Coincidencias"
+    
+  strongs:
+    definition: "Definición:"
+    pronunciation: "Pronunciación:"
+    grammar: "Información Gramatical:"
+    etymology: "Etimología:"
+    usage: "Uso en las Escrituras:"
+    total_occurrences: "Total de apariciones:"
+    unique_verses: "En versículos únicos:"
+    examples: "Ejemplos de Uso"
+    showing: "mostrando"
+    of: "de"
+    not_found: "Número Strong no encontrado"
+    search_related: "Buscar \"%{word}\" en toda la Biblia"
+    
+  tv:
+    instructions: "Instrucciones para Pantalla TV"
+    navigation_help: "Navegación: Use las flechas ← → o teclas P/N para navegar entre versículos"
+    slideshow_help: "Presentación: Haga clic en \"📺 Presentación\" para modo pantalla completa"
+    strongs_help: "Strong's: Haga clic en cualquier palabra griega para ver su definición Strong"
+    keyboard_help: "Atajos de teclado: Ctrl+S para presentación, Escape para cerrar ventanas"
+    
+  slideshow:
+    exit: "Salir"
+    fullscreen: "Pantalla Completa"
+    navigation_hint: "Use ← → o P/N para navegar • Mueva el ratón para mostrar controles"
+    
+  stats:
+    chapter_statistics: "Estadísticas del Capítulo"
+    times: "veces"
+    time: "vez"
+    
+  messages:
+    no_data: "No hay datos bíblicos disponibles"
+    no_verses: "No hay versículos disponibles"
+    no_interlinear: "No hay datos interlineales disponibles para este versículo."
+    spanish_only: "Solo se muestra el texto en español arriba."
+    loading: "Cargando..."
+    error_loading: "Error al cargar la definición"
+    
+  errors:
+    book_not_found: "Libro no encontrado"
+    chapter_not_found: "Capítulo no encontrado"
+    verse_not_found: "Versículo no encontrado"
+    
+  settings:
+    button: "Configuración"
+    title: "Configuración de Palabras"
+    description: "Personaliza qué información mostrar para cada palabra en el texto interlineal."
+    show_greek: "Texto Griego"
+    show_greek_desc: "Mostrar la palabra original en griego"
+    show_spanish: "Traducción Español"
+    show_spanish_desc: "Mostrar la traducción en español"
+    show_strongs: "Números Strong"
+    show_strongs_desc: "Mostrar códigos de concordancia"
+    show_grammar: "Información Gramatical"
+    show_grammar_desc: "Mostrar tipo de palabra y género"
+    show_pronunciation: "Pronunciación"
+    show_pronunciation_desc: "Mostrar guía fonética del griego"
+    show_word_order: "Orden de Palabra"
+    show_word_order_desc: "Mostrar posición numérica"
+    reset_defaults: "Restaurar Predeterminados"
+    done: "Listo"

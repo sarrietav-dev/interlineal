@@ -1,0 +1,257 @@
+<% content_for :title, @chapter.full_reference %>
+
+<div class="space-y-6 lg:space-y-8">
+  <!-- Navigation Header -->
+  <nav class="bg-gray-800 rounded-lg lg:rounded-xl p-4 lg:p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+        <!-- Book Info -->
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl lg:text-3xl font-bold text-yellow-400">
+            📖 <%= @chapter.full_reference %>
+          </h1>
+          <span class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm lg:text-base font-medium">
+            <%= @verse_count %> <%= @verse_count == 1 ? 'versículo' : 'versículos' %>
+          </span>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+        <a href="<%= bible_book_path(@book.id) %>" 
+           class="bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center">
+          📚 Libro
+        </a>
+        
+        <%= link_to "🔍 Search", bible_search_path, 
+            class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Chapter Navigation -->
+  <nav class="bg-gray-800 rounded-lg lg:rounded-xl p-4 lg:p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+        <!-- Previous Chapter -->
+        <% if @prev_chapter %>
+          <%= link_to "◄ Capítulo #{@prev_chapter.chapter_number}", 
+              bible_chapter_path(@book.id, @prev_chapter.chapter_number),
+              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              title: "Capítulo anterior" %>
+        <% else %>
+          <button class="bg-gray-600 text-gray-400 font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl min-w-32 text-center cursor-not-allowed" disabled>◄ Anterior</button>
+        <% end %>
+        
+        <!-- Chapter Selector -->
+        <%= form_with url: bible_chapter_path(@book.id, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
+          <%= hidden_field_tag :book_id, @book.id %>
+          <%= select_tag :chapter_number,
+              options_from_collection_for_select(@all_books.find(@book.id).chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
+              {
+                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                onchange: "this.form.submit()",
+                "aria-label": "Select Chapter"
+              } %>
+        <% end %>
+      </div>
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+        <!-- Next Chapter -->
+        <% if @next_chapter %>
+          <%= link_to "Capítulo #{@next_chapter.chapter_number} ►", 
+              bible_chapter_path(@book.id, @next_chapter.chapter_number),
+              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              title: "Capítulo siguiente" %>
+        <% else %>
+          <button class="bg-gray-600 text-gray-400 font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl min-w-32 text-center cursor-not-allowed" disabled>Siguiente ►</button>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Verses Grid -->
+  <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
+    <h2 class="text-xl lg:text-2xl font-bold text-white mb-6 lg:mb-8 text-center">
+      Versículos del Capítulo <%= @chapter.chapter_number %>
+    </h2>
+    
+    <% if @verses.present? %>
+      <!-- Verse Grid - Optimized for TV screens -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 lg:gap-6">
+        <% @verses.each do |verse| %>
+          <div class="bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400 group">
+            <div class="flex items-start gap-4">
+              <!-- Verse Number -->
+              <div class="flex-shrink-0">
+                <span class="bg-yellow-600 group-hover:bg-yellow-500 text-yellow-100 font-bold text-lg lg:text-2xl w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center">
+                  <%= verse.verse_number %>
+                </span>
+              </div>
+              
+              <!-- Verse Content -->
+              <div class="flex-1 min-w-0">
+                <div class="mb-3 lg:mb-4">
+                  <h3 class="text-base lg:text-lg font-semibold text-yellow-400 mb-2">
+                    <%= verse.full_reference %>
+                  </h3>
+                  
+                  <!-- Spanish Text -->
+                  <% if verse.spanish_text.present? %>
+                    <p class="text-sm lg:text-base xl:text-lg text-white leading-relaxed mb-3">
+                      <%= verse.spanish_text %>
+                    </p>
+                  <% end %>
+                  
+                  <!-- Word Count Info -->
+                  <div class="flex items-center gap-3 text-xs lg:text-sm text-gray-400">
+                    <span class="flex items-center gap-1">
+                      🔤 <%= verse.word_count %> <%= verse.word_count == 1 ? 'palabra' : 'palabras' %>
+                    </span>
+                    <% if verse.words.with_strongs.count > 0 %>
+                      <span class="flex items-center gap-1">
+                        📋 <%= verse.words.with_strongs.count %> Strong's
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                  <%= link_to "📖 Estudiar", 
+                      bible_verse_path(@book.id, @chapter.chapter_number, verse.verse_number),
+                      class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 lg:px-4 py-2 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center flex-1" %>
+                  
+                  <%= link_to "📺 Slideshow", 
+                      bible_slideshow_path(@book.id, @chapter.chapter_number, verse.verse_number),
+                      class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-3 lg:px-4 py-2 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center flex-1",
+                      target: "_blank",
+                      title: "Abrir en modo presentación" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Pagination for large chapters -->
+      <% if @verse_count > @page_size %>
+        <div class="mt-8 lg:mt-12 flex justify-center">
+          <div class="flex items-center gap-2 lg:gap-4">
+            <% if @page > 1 %>
+              <%= link_to "◄ Anterior", 
+                  bible_chapter_path(@book.id, @chapter.chapter_number, page: @page - 1),
+                  class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200" %>
+            <% end %>
+            
+            <span class="text-base lg:text-xl text-gray-300 px-4">
+              Página <%= @page %> de <%= (@verse_count.to_f / @page_size).ceil %>
+            </span>
+            
+            <% if @page < (@verse_count.to_f / @page_size).ceil %>
+              <%= link_to "Siguiente ►", 
+                  bible_chapter_path(@book.id, @chapter.chapter_number, page: @page + 1),
+                  class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-12 lg:py-20">
+        <div class="text-6xl lg:text-8xl mb-6">📖</div>
+        <h3 class="text-xl lg:text-3xl font-semibold text-white mb-4">
+          No hay versículos disponibles
+        </h3>
+        <p class="text-base lg:text-xl text-gray-400">
+          Este capítulo no contiene versículos o no se han cargado los datos.
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Chapter Statistics -->
+  <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
+    <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-4 lg:mb-6">
+      📊 Estadísticas del Capítulo
+    </h3>
+    
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div class="text-center">
+        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+          <%= @verse_count %>
+        </div>
+        <div class="text-sm lg:text-base text-gray-400">
+          <%= @verse_count == 1 ? 'Versículo' : 'Versículos' %>
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+          <%= @chapter.word_count %>
+        </div>
+        <div class="text-sm lg:text-base text-gray-400">
+          Palabras
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+          <%= @chapter.words.with_strongs.count %>
+        </div>
+        <div class="text-sm lg:text-base text-gray-400">
+          Strong's
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+          <%= @book.chapter_count %>
+        </div>
+        <div class="text-sm lg:text-base text-gray-400">
+          Capítulos en <%= @book.abbreviation %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Keyboard navigation for chapter view
+document.addEventListener('keydown', function(e) {
+  switch(e.key) {
+    case 'ArrowLeft':
+    case 'p':
+    case 'P':
+      e.preventDefault();
+      <% if @prev_chapter %>
+        window.location.href = '<%= bible_chapter_path(@book.id, @prev_chapter.chapter_number) %>';
+      <% end %>
+      break;
+    case 'ArrowRight':
+    case 'n':
+    case 'N':
+      e.preventDefault();
+      <% if @next_chapter %>
+        window.location.href = '<%= bible_chapter_path(@book.id, @next_chapter.chapter_number) %>';
+      <% end %>
+      break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      e.preventDefault();
+      const verseNumber = e.key;
+      if (verseNumber <= <%= @verse_count %>) {
+        window.location.href = '<%= bible_verse_path(@book.id, @chapter.chapter_number, "") %>' + verseNumber;
+      }
+      break;
+  }
+});
+</script>

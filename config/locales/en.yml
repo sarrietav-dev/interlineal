@@ -1,31 +1,118 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app:
+    name: "Interlinear Bible"
+    subtitle: "Word-by-word Greek-Spanish Bible study"
+  
+  bible:
+    book: "Book"
+    books: "Books"
+    chapter: "Chapter"
+    chapters: "Chapters"
+    verse: "Verse"
+    verses: "Verses"
+    word: "Word"
+    words: "Words"
+    search: "Search"
+    slideshow: "Slideshow"
+    slideshow_mode: "Slideshow Mode"
+    presentation: "Presentation"
+    home: "Home"
+    back_to_home: "Back to Home"
+    
+  navigation:
+    previous: "Previous"
+    next: "Next"
+    previous_verse: "Previous verse"
+    next_verse: "Next verse"
+    previous_chapter: "Previous chapter"
+    next_chapter: "Next chapter"
+    view_chapter: "View Chapter"
+    view_verse: "View Verse"
+    study: "Study"
+    navigation: "Navigation"
+    back: "Back"
+    
+  keyboard_shortcuts: "Keyboard shortcuts"
+    
+  search:
+    title: "Search the Scriptures"
+    placeholder: "Search for words in Spanish, Greek, Strong's (e.g. G3754) or reference..."
+    button: "Search"
+    results: "Results for"
+    result: "result"
+    results_plural: "results"
+    no_results: "No results found"
+    query_too_short: "Search too short"
+    query_too_short_message: "Please enter at least 2 characters to search."
+    suggestions: "Suggestions:"
+    tips: "Search Tips"
+    spanish_example: "Spanish: love, faith, hope"
+    greek_example: "Greek: ἀγάπη, λόγος, θεός"
+    strongs_example: "Strong's: G26, G3056, G2316"
+    popular_searches: "Popular Searches"
+    matching_words: "Matching words:"
+    statistics: "Search Statistics"
+    coincidences: "Matches"
+    
+  strongs:
+    definition: "Definition:"
+    pronunciation: "Pronunciation:"
+    grammar: "Grammatical Information:"
+    etymology: "Etymology:"
+    usage: "Usage in Scripture:"
+    total_occurrences: "Total occurrences:"
+    unique_verses: "In unique verses:"
+    examples: "Usage Examples"
+    showing: "showing"
+    of: "of"
+    not_found: "Strong's number not found"
+    search_related: "Search for \"%{word}\" in the entire Bible"
+    
+  tv:
+    instructions: "TV Display Instructions"
+    navigation_help: "Navigation: Use arrow keys ← → or P/N keys to navigate between verses"
+    slideshow_help: "Slideshow: Click \"📺 Slideshow\" button for full-screen presentation mode"
+    strongs_help: "Strong's: Click on any Greek word to see its Strong's concordance definition"
+    keyboard_help: "Keyboard shortcuts: Ctrl+S for slideshow, Escape to close popups"
+    
+  slideshow:
+    exit: "Exit"
+    fullscreen: "Fullscreen"
+    navigation_hint: "Use ← → or P/N to navigate • Move mouse to show controls"
+    
+  stats:
+    chapter_statistics: "Chapter Statistics"
+    times: "times"
+    time: "time"
+    
+  messages:
+    no_data: "No biblical data available"
+    no_verses: "No verses available"
+    no_interlinear: "No interlinear data available for this verse."
+    spanish_only: "Only the Spanish text is displayed above."
+    loading: "Loading..."
+    error_loading: "Error loading definition"
+    
+  errors:
+    book_not_found: "Book not found"
+    chapter_not_found: "Chapter not found"
+    verse_not_found: "Verse not found"
+    
+  settings:
+    button: "Settings"
+    title: "Word Display Settings"
+    description: "Customize which information to show for each word in the interlinear text."
+    show_greek: "Greek Text"
+    show_greek_desc: "Show original Greek word"
+    show_spanish: "Spanish Translation"
+    show_spanish_desc: "Show Spanish translation"
+    show_strongs: "Strong's Numbers"
+    show_strongs_desc: "Show concordance codes"
+    show_grammar: "Grammar Information"
+    show_grammar_desc: "Show word type and gender"
+    show_pronunciation: "Pronunciation"
+    show_pronunciation_desc: "Show Greek phonetic guide"
+    show_word_order: "Word Order"
+    show_word_order_desc: "Show numerical position"
+    reset_defaults: "Reset Defaults"
+    done: "Done"
