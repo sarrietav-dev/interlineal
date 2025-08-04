@@ -1,7 +1,7 @@
 class BibleController < ApplicationController
-  before_action :set_book, only: [ :show_book, :show_chapter, :show_verse ]
-  before_action :set_chapter, only: [ :show_chapter, :show_verse ]
-  before_action :set_verse, only: [ :show_verse ]
+  before_action :set_book, only: [ :show_book, :show_chapter, :show_verse, :slideshow ]
+  before_action :set_chapter, only: [ :show_chapter, :show_verse, :slideshow ]
+  before_action :set_verse, only: [ :show_verse, :slideshow ]
 
   # GET /
   def index
@@ -71,9 +71,6 @@ class BibleController < ApplicationController
 
   # GET /slideshow/:book_id/:chapter_number/:verse_number
   def slideshow
-    set_book
-    set_chapter
-    set_verse
     @words = @verse.words_with_strongs.by_order
     @spanish_text = @verse.spanish_text
 

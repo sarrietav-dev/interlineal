@@ -26,6 +26,7 @@ export default class extends Controller {
 
   // Show controls on mouse movement
   mousemove() {
+    console.log('mousemove')
     this.showControls()
     this.showHints()
     this.showCursor()
@@ -43,6 +44,7 @@ export default class extends Controller {
 
   // Keyboard navigation for slideshow
   keydown(event) {
+    console.log('keydown', event)
     const prevLinks = document.querySelectorAll('[data-slideshow-nav="prev"]')
     const nextLinks = document.querySelectorAll('[data-slideshow-nav="next"]')
     const exitLinks = document.querySelectorAll('[data-slideshow-nav="exit"]')
