@@ -115,4 +115,5 @@ es:
     show_word_order: "Orden de Palabra"
     show_word_order_desc: "Mostrar posición numérica"
     reset_defaults: "Restaurar Predeterminados"
+    apply: "Aplicar"
     done: "Listo"

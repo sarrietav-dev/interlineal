@@ -33,11 +33,10 @@
             class: "bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200",
             data: { "turbo-method": :patch } %>
 
-        <%= button_to "✓ #{t('settings.done')}",
-            close_settings_path,
-            method: :get,
-            class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200",
-            data: { turbo_stream: true } %>
+        <button type="submit" form="settings-form"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200">
+          ✓ <%= t('settings.done') %>
+        </button>
       </div>
     </div>
   </div>

@@ -13,6 +13,7 @@ class SettingsController < ApplicationController
     ).to_h.transform_values { |v| v == "1" || v == "true" }
 
     session[:word_display_settings] = new_settings
+    @settings = default_settings.merge(new_settings)
 
     respond_to do |format|
       format.turbo_stream do
