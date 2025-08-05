@@ -2,11 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 
 // Stimulus controller for Strong's concordance popup management
 export default class extends Controller {
-  static targets = ["popup", "backdrop", "frame"]
+  static targets = ["frame"]
   static values = { 
-    strongNumber: String,
-    loadingText: String,
-    errorText: String 
+    strongNumber: String
   }
 
   connect() {
@@ -26,42 +24,19 @@ export default class extends Controller {
     if (!strongNumber) return
     
     this.strongNumberValue = strongNumber
-    this.openPopup()
     this.loadDefinition()
-  }
-
-  // Open the popup modal
-  openPopup() {
-    this.popupTarget.style.display = 'block'
-    this.backdropTarget.style.display = 'block'
-    
-    // Focus trap for accessibility
-    this.frameTarget.focus()
-  }
-
-  // Close the popup modal
-  close() {
-    this.popupTarget.style.display = 'none'
-    this.backdropTarget.style.display = 'none'
   }
 
   // Load Strong's definition using Turbo Frame
   loadDefinition() {
-    // Use Turbo to load the content - no manual HTML building
+    // Use Turbo to load the content into the frame
     this.frameTarget.src = `/strongs/${this.strongNumberValue}`
   }
 
-  // Close on backdrop click
-  backdropClick(event) {
-    if (event.target === this.backdropTarget) {
-      this.close()
-    }
-  }
-
-  // Close on Escape key
-  keydown(event) {
-    if (event.key === 'Escape') {
-      this.close()
+  // Close the popup by clearing the frame
+  close() {
+    if (this.hasFrameTarget) {
+      this.frameTarget.innerHTML = ""
     }
   }
 }

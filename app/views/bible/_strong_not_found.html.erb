@@ -1,80 +1,40 @@
-<!-- Strong's Number Not Found - TV Optimized -->
-<turbo-frame id="strong-definition">
-<div class="strong-not-found-content text-center py-8 lg:py-12">
-  <!-- Error Icon -->
-  <div class="text-6xl lg:text-8xl mb-4 lg:mb-6">😞</div>
-  
-  <!-- Error Message -->
-  <h2 class="text-xl lg:text-3xl font-bold text-red-400 mb-4 lg:mb-6">
-    <%= t('strongs.not_found') %>
-  </h2>
-  
-  <!-- Requested Number -->
-  <p class="text-base lg:text-xl text-gray-300 mb-6 lg:mb-8">
-    <%= t('search.results') %>: "<span class="text-yellow-400 font-semibold">G<%= params[:strong_number] %></span>"
-  </p>
-  
-  <!-- Suggestions -->
-  <div class="bg-gray-700 rounded-lg p-4 lg:p-6 max-w-2xl mx-auto">
-    <h3 class="text-lg lg:text-xl font-semibold text-white mb-3 lg:mb-4">
-      💡 <%= t('search.suggestions') %>
-    </h3>
-    <ul class="text-sm lg:text-base text-gray-300 space-y-2 text-left">
-      <li>• Verifique que el número Strong sea correcto</li>
-      <li>• Use el formato G#### (ej: G2316 para θεός)</li>
-      <li>• Los números deben estar entre G1 y G5624</li>
-      <li>• Intente buscar por la palabra griega directamente</li>
-    </ul>
-  </div>
-  
-  <!-- Action Buttons -->
-  <div class="mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center">
-    <button data-action="click->strongs#close" 
-            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32">
-      ← <%= t('navigation.back') %>
-    </button>
-    
-    <a href="<%= bible_search_path %>" 
-       data-action="click->strongs#close"
-       class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center">
-      🔍 <%= t('bible.search') %>
-    </a>
-  </div>
-</div>
-</turbo-frame>
+<%= turbo_frame_tag "strong-definition" do %>
+  <div class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center"
+       data-controller="modal"
+       data-modal-target="backdrop"
+       data-action="click->modal#closeOnOutside keydown@document->modal#handleEscape">
 
-<style>
-  /* Additional styling for better TV readability */
-  .strong-not-found-content {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-  }
-  
-  /* High contrast adjustments */
-  @media (prefers-contrast: high) {
-    .strong-not-found-content {
-      background-color: #000;
-      color: #fff;
-    }
-    
-    .strong-not-found-content .bg-gray-700 {
-      background-color: #333;
-      border: 2px solid #666;
-    }
-  }
-  
-  /* Large screen optimizations */
-  @media (min-width: 1920px) {
-    .strong-not-found-content h2 {
-      font-size: 2.5rem;
-    }
-    
-    .strong-not-found-content h3 {
-      font-size: 1.5rem;
-    }
-    
-    .strong-not-found-content p,
-    .strong-not-found-content li {
-      font-size: 1.25rem;
-    }
-  }
-</style>
+    <div class="bg-gray-800 border-2 border-red-400 rounded-xl p-6 lg:p-8 max-w-2xl w-full mx-4 shadow-2xl"
+         onclick="event.stopPropagation()">
+
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl lg:text-3xl font-bold text-red-400">
+          ❌ Strong's No Encontrado
+        </h2>
+
+        <%= link_to "✕",
+            "#",
+            class: "text-gray-400 hover:text-white text-2xl font-bold leading-none",
+            title: "Cerrar",
+            data: { action: "click->modal#close" } %>
+      </div>
+
+      <div class="text-center">
+        <p class="text-lg lg:text-xl text-gray-300 mb-6">
+          No se encontró la definición de Strong's solicitada.
+        </p>
+        
+        <p class="text-base lg:text-lg text-gray-400 mb-8">
+          Es posible que el número de Strong's no exista en nuestra base de datos o que haya un error en la referencia.
+        </p>
+
+        <div class="flex justify-center">
+          <%= link_to "✓ Entendido",
+              "#",
+              class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 rounded-lg text-base lg:text-xl transition-colors duration-200",
+              data: { action: "click->modal#close" } %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

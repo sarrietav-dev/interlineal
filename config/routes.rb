@@ -30,8 +30,9 @@ Rails.application.routes.draw do
   get "strongs/:strong_number", to: "bible#strong_definition", as: :strong_definition
 
   # Settings management with Turbo
-  resource :settings, only: [:show, :update] do
+  resource :settings, only: [ :show, :update ] do
     patch :reset, on: :member
+    get :close, on: :member
   end
 
   # Hotwire-based interactions - no API needed

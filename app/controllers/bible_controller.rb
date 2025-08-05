@@ -136,9 +136,26 @@ class BibleController < ApplicationController
     if @strong
       @verses_with_word = @strong.verses_with_this_word.limit(20)
 
-      render partial: "strong_definition", locals: { strong: @strong, verses: @verses_with_word }
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("strong-definition",
+            render_to_string(partial: "strong_definition",
+                           locals: { strong: @strong, verses: @verses_with_word }))
+        end
+        format.html do
+          render partial: "strong_definition", locals: { strong: @strong, verses: @verses_with_word }
+        end
+      end
     else
-      render partial: "strong_not_found"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("strong-definition",
+            render_to_string(partial: "strong_not_found"))
+        end
+        format.html do
+          render partial: "strong_not_found"
+        end
+      end
     end
   end
 

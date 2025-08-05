@@ -6,28 +6,28 @@
     <h1 class="text-2xl lg:text-4xl xl:text-5xl font-bold text-yellow-400 text-center mb-6 lg:mb-8">
       🔍 Búsqueda en las Escrituras
     </h1>
-    
+
     <!-- Search Form -->
-    <%= form_with url: bible_search_path, method: :get, local: true, 
+    <%= form_with url: bible_search_path, method: :get, local: true,
         class: "space-y-4 lg:space-y-6",
-        data: { 
+        data: {
           controller: "search",
           action: "submit->search#submit keydown@document->search#keydown"
         } do |f| %>
       <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
-        <%= text_field_tag :q, @query, 
-            { 
+        <%= text_field_tag :q, @query,
+            {
               class: "flex-1 bg-gray-700 text-white border border-gray-600 rounded-lg px-4 lg:px-6 py-3 lg:py-4 text-base lg:text-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400",
               placeholder: t('search.placeholder'),
               autocomplete: "off",
               autofocus: true,
               data: { search_target: "input" }
             } %>
-        <%= submit_tag "🔍 #{t('search.button')}", 
+        <%= submit_tag "🔍 #{t('search.button')}",
             class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32" %>
       </div>
     <% end %>
-    
+
     <!-- Search Tips -->
     <div class="mt-6 lg:mt-8 p-4 lg:p-6 bg-gray-700 rounded-lg border border-gray-600">
       <h3 class="text-lg lg:text-xl font-semibold text-white mb-3 lg:mb-4">💡 Consejos de Búsqueda</h3>
@@ -44,7 +44,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Search Results -->
   <% if @query.present? %>
     <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
@@ -52,14 +52,14 @@
         <h2 class="text-xl lg:text-2xl font-bold text-white">
           Resultados para: "<span class="text-yellow-400"><%= @query %></span>"
         </h2>
-        
+
         <% if @results.present? %>
           <div class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm lg:text-base font-semibold">
             <%= @total_results %> <%= @total_results == 1 ? 'resultado' : 'resultados' %>
           </div>
         <% end %>
       </div>
-      
+
       <% if @results.present? %>
         <!-- Results Grid -->
         <div class="space-y-4 lg:space-y-6">
@@ -72,14 +72,14 @@
                     <%= index + 1 %>
                   </span>
                 </div>
-                
+
                 <!-- Verse Content -->
                 <div class="flex-1 min-w-0">
                   <!-- Verse Reference -->
                   <h3 class="text-lg lg:text-xl font-bold text-yellow-400 mb-2 lg:mb-3">
                     <%= verse.full_reference %>
                   </h3>
-                  
+
                   <!-- Spanish Text with Search Highlighting -->
                   <% if verse.spanish_text.present? %>
                     <p class="text-base lg:text-lg xl:text-xl text-white leading-relaxed mb-4 lg:mb-6">
@@ -90,7 +90,7 @@
                       <% end %>
                     </p>
                   <% end %>
-                  
+
                   <!-- Matching Words Info -->
                   <% matching_words = verse.words.where("greek_word LIKE ? OR spanish_translation LIKE ? OR strong_number LIKE ?", "%#{@query}%", "%#{@query}%", "%#{@query}%") %>
                   <% if matching_words.present? %>
@@ -110,18 +110,18 @@
                       </div>
                     </div>
                   <% end %>
-                  
+
                   <!-- Action Buttons -->
                   <div class="flex flex-col sm:flex-row gap-2 lg:gap-3">
-                    <%= link_to "📖 Ver Versículo", 
+                    <%= link_to "📖 Ver Versículo",
                         bible_verse_path(verse.book.id, verse.chapter.chapter_number, verse.verse_number),
                         class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 lg:px-4 py-2 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center flex-1" %>
-                    
-                    <%= link_to "📑 Ver Capítulo", 
+
+                    <%= link_to "📑 Ver Capítulo",
                         bible_chapter_path(verse.book.id, verse.chapter.chapter_number),
                         class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-3 lg:px-4 py-2 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center flex-1" %>
-                    
-                    <%= link_to "📺 Slideshow", 
+
+                    <%= link_to "📺 Slideshow",
                         bible_slideshow_path(verse.book.id, verse.chapter.chapter_number, verse.verse_number),
                         class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-3 lg:px-4 py-2 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center flex-1",
                         target: "_blank",
@@ -132,11 +132,11 @@
             </div>
           <% end %>
         </div>
-        
+
         <!-- Search Stats -->
         <div class="mt-8 lg:mt-12 p-4 lg:p-6 bg-gray-700 rounded-lg border border-gray-600">
           <h3 class="text-lg lg:text-xl font-semibold text-white mb-3 lg:mb-4">📊 Estadísticas de Búsqueda</h3>
-          
+
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 text-center">
             <div>
               <div class="text-xl lg:text-2xl font-bold text-yellow-400 mb-1">
@@ -146,7 +146,7 @@
                 <%= @total_results == 1 ? 'Versículo' : 'Versículos' %>
               </div>
             </div>
-            
+
             <div>
               <div class="text-xl lg:text-2xl font-bold text-sky-400 mb-1">
                 <%= @results.map(&:book).uniq.count %>
@@ -155,7 +155,7 @@
                 <%= @results.map(&:book).uniq.count == 1 ? 'Libro' : 'Libros' %>
               </div>
             </div>
-            
+
             <div>
               <div class="text-xl lg:text-2xl font-bold text-green-400 mb-1">
                 <%= @results.map { |v| v.chapter }.uniq.count %>
@@ -164,7 +164,7 @@
                 <%= @results.map { |v| v.chapter }.uniq.count == 1 ? 'Capítulo' : 'Capítulos' %>
               </div>
             </div>
-            
+
             <div>
               <div class="text-xl lg:text-2xl font-bold text-purple-400 mb-1">
                 <%= @results.sum { |v| v.words.where("greek_word LIKE ? OR spanish_translation LIKE ? OR strong_number LIKE ?", "%#{@query}%", "%#{@query}%", "%#{@query}%").count } %>
@@ -175,7 +175,7 @@
             </div>
           </div>
         </div>
-        
+
       <% elsif @query.length < 2 %>
         <!-- Query too short -->
         <div class="text-center py-12 lg:py-20">
@@ -187,7 +187,7 @@
             Por favor, ingrese al menos 2 caracteres para realizar la búsqueda.
           </p>
         </div>
-        
+
       <% else %>
         <!-- No results -->
         <div class="text-center py-12 lg:py-20">
@@ -198,7 +198,7 @@
           <p class="text-base lg:text-xl text-gray-400 mb-8">
             No hay versículos que coincidan con "<span class="text-yellow-400"><%= @query %></span>".
           </p>
-          
+
           <!-- Search Suggestions -->
           <div class="bg-gray-700 rounded-lg p-4 lg:p-6 max-w-2xl mx-auto">
             <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">💡 Sugerencias:</h4>
@@ -213,7 +213,7 @@
         </div>
       <% end %>
     </div>
-    
+
   <% else %>
     <!-- Welcome State -->
     <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
@@ -223,20 +223,20 @@
           Búsqueda Avanzada
         </h2>
         <p class="text-base lg:text-xl text-gray-400 mb-8 lg:mb-12 max-w-3xl mx-auto leading-relaxed">
-          Encuentre versículos específicos buscando por palabras en español, términos griegos originales, o números de Strong's Concordance. 
+          Encuentre versículos específicos buscando por palabras en español, términos griegos originales, o números de Strong's Concordance.
           Perfecto para estudios bíblicos profundos y preparación de sermones.
         </p>
-        
+
         <!-- Popular Searches -->
         <div class="max-w-4xl mx-auto">
           <h3 class="text-xl lg:text-2xl font-semibold text-yellow-400 mb-4 lg:mb-6">
             🔥 Búsquedas Populares
           </h3>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
             <% popular_searches = ["amor", "fe", "esperanza", "paz", "gozo", "gracia", "salvación", "vida eterna", "perdón"] %>
             <% popular_searches.each do |search_term| %>
-              <a href="<%= bible_search_path(q: search_term) %>" 
+              <a href="<%= bible_search_path(q: search_term) %>"
                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-3 rounded-lg text-sm lg:text-base transition-colors duration-200 text-center">
                 🔍 <%= search_term.titleize %>
               </a>
@@ -246,10 +246,10 @@
       </div>
     </div>
   <% end %>
-  
+
   <!-- Back to Home -->
   <div class="text-center">
-    <%= link_to "🏠 Volver al Inicio", root_path, 
+    <%= link_to "🏠 Volver al Inicio", root_path,
         class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 rounded-lg text-base lg:text-xl transition-colors duration-200" %>
   </div>
 </div>

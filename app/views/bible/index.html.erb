@@ -18,7 +18,7 @@
       <h2 class="text-2xl lg:text-4xl font-bold text-white mb-6 lg:mb-10 text-center">
         🚀 Comenzar Estudio
       </h2>
-      
+
       <% if @books.present? %>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           <!-- Book Selection -->
@@ -28,7 +28,7 @@
             </h3>
             <div class="space-y-3">
               <% @books.first(10).each do |book| %>
-                <a href="<%= bible_book_path(book.id) %>" 
+                <a href="<%= bible_book_path(book.id) %>"
                    class="block bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400">
                   <div class="flex justify-between items-center">
                     <span class="text-lg lg:text-xl font-semibold text-white">
@@ -45,13 +45,13 @@
               <% end %>
             </div>
           </div>
-          
+
           <!-- Quick Access -->
           <div class="space-y-4 lg:space-y-6">
             <h3 class="text-xl lg:text-2xl font-semibold text-yellow-400 mb-4">
               ⚡ Acceso Rápido
             </h3>
-            
+
             <!-- Go to specific verse -->
             <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
               <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
@@ -59,47 +59,47 @@
               </h4>
               <%= form_with url: root_path, method: :get, local: true, class: "space-y-3" do |f| %>
                 <div class="grid grid-cols-3 gap-3">
-                  <%= select_tag :book_id, 
+                  <%= select_tag :book_id,
                       options_from_collection_for_select(@books, :id, :abbreviation, @current_book&.id),
-                      { 
+                      {
                         class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
                         prompt: "Libro"
                       } %>
-                  <%= number_field_tag :chapter, nil, 
-                      { 
+                  <%= number_field_tag :chapter, nil,
+                      {
                         class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
                         placeholder: "Cap.",
                         min: 1
                       } %>
-                  <%= number_field_tag :verse, nil, 
-                      { 
+                  <%= number_field_tag :verse, nil,
+                      {
                         class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
                         placeholder: "Ver.",
                         min: 1
                       } %>
                 </div>
-                <%= submit_tag "Ir →", 
+                <%= submit_tag "Ir →",
                     class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-base lg:text-lg transition-colors duration-200" %>
               <% end %>
             </div>
-            
+
             <!-- Search -->
             <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
               <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
                 🔍 Buscar en las Escrituras
               </h4>
               <%= form_with url: bible_search_path, method: :get, local: true, class: "space-y-3" do |f| %>
-                <%= text_field_tag :q, nil, 
-                    { 
+                <%= text_field_tag :q, nil,
+                    {
                       class: "w-full bg-gray-600 text-white border border-gray-500 rounded-lg px-4 py-3 text-base lg:text-lg focus:ring-2 focus:ring-green-500",
                       placeholder: "Buscar palabras, versículos o Strong's...",
                       autocomplete: "off"
                     } %>
-                <%= submit_tag "🔍 Buscar", 
+                <%= submit_tag "🔍 Buscar",
                     class: "w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg text-base lg:text-lg transition-colors duration-200" %>
               <% end %>
             </div>
-            
+
             <!-- Sample verses -->
             <% if @current_verse %>
               <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
@@ -122,7 +122,7 @@
             No hay datos bíblicos disponibles
           </h3>
           <p class="text-base lg:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Para comenzar a usar la aplicación, necesita importar los datos bíblicos. 
+            Para comenzar a usar la aplicación, necesita importar los datos bíblicos.
             Consulte la documentación para instrucciones sobre cómo cargar los datos.
           </p>
         </div>
@@ -135,7 +135,7 @@
     <h2 class="text-2xl lg:text-4xl font-bold text-white mb-8 lg:mb-12 text-center">
       ✨ Características Principales
     </h2>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
       <!-- Interlinear Display -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
@@ -147,7 +147,7 @@
           Visualización palabra por palabra del griego original con traducción al español
         </p>
       </div>
-      
+
       <!-- Strong's Concordance -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
         <div class="text-4xl lg:text-5xl mb-4">📋</div>
@@ -158,7 +158,7 @@
           Definiciones detalladas y análisis gramatical de cada palabra griega
         </p>
       </div>
-      
+
       <!-- TV Presentation -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
         <div class="text-4xl lg:text-5xl mb-4">📺</div>
@@ -169,7 +169,7 @@
           Diseño optimizado para pantallas grandes y proyección en iglesias
         </p>
       </div>
-      
+
       <!-- Search -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
         <div class="text-4xl lg:text-5xl mb-4">🔍</div>
@@ -180,7 +180,7 @@
           Busque por palabras en español, griego, o números Strong
         </p>
       </div>
-      
+
       <!-- Navigation -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
         <div class="text-4xl lg:text-5xl mb-4">⌨️</div>
@@ -191,7 +191,7 @@
           Use las flechas del teclado para navegar rápidamente entre versículos
         </p>
       </div>
-      
+
       <!-- Responsive -->
       <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
         <div class="text-4xl lg:text-5xl mb-4">📱</div>
@@ -213,11 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      
+
       const bookId = document.querySelector('select[name="book_id"]').value;
       const chapter = document.querySelector('input[name="chapter"]').value;
       const verse = document.querySelector('input[name="verse"]').value;
-      
+
       if (bookId && chapter && verse) {
         window.location.href = `/books/${bookId}/chapters/${chapter}/verses/${verse}`;
       } else {

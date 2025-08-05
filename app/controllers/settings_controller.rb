@@ -2,13 +2,12 @@ class SettingsController < ApplicationController
   before_action :load_settings
 
   def show
-    # Modal will be rendered as Turbo Frame
-    render layout: false if turbo_frame_request?
   end
 
   def update
-    # Update settings in session
-    new_settings = params.require(:settings).permit(
+    @verse_id = params.dig(:settings, :verse_id)
+
+    new_settings = params.permit(
       :show_greek, :show_spanish, :show_strongs,
       :show_grammar, :show_pronunciation, :show_word_order
     ).to_h.transform_values { |v| v == "1" || v == "true" }
@@ -17,12 +16,9 @@ class SettingsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream do
-        # Send multiple Turbo Stream actions:
-        # 1. Close the settings modal
-        # 2. Update the word display with new settings
         render turbo_stream: [
           turbo_stream.update("settings-modal", ""),
-          turbo_stream.update("interlinear-words",
+          turbo_stream.update("interlinear-display",
             render_to_string(partial: "bible/interlinear_words",
                            locals: { words: current_verse_words,
                                    settings: @settings }))
@@ -33,7 +29,6 @@ class SettingsController < ApplicationController
   end
 
   def reset
-    # Reset to defaults
     session[:word_display_settings] = default_settings
 
     respond_to do |format|
@@ -41,7 +36,7 @@ class SettingsController < ApplicationController
         render turbo_stream: [
           turbo_stream.update("settings-form",
             render_to_string(partial: "settings/form", locals: { settings: @settings })),
-          turbo_stream.update("interlinear-words",
+          turbo_stream.update("interlinear-display",
             render_to_string(partial: "bible/interlinear_words",
                            locals: { words: current_verse_words,
                                    settings: @settings }))
@@ -49,6 +44,10 @@ class SettingsController < ApplicationController
       end
       format.html { redirect_back(fallback_location: root_path) }
     end
+  end
+
+  def close
+    render turbo_stream: turbo_stream.update("settings-modal", "")
   end
 
   private
@@ -73,11 +72,12 @@ class SettingsController < ApplicationController
   end
 
   def current_verse_words
-    # Get current verse from referrer or session
-    if params[:verse_id].present?
-      Verse.find(params[:verse_id]).words.by_order
+    verse_id = @verse_id || params.dig(:settings, :verse_id) || params[:verse_id]
+
+    if verse_id.present?
+      Verse.find(verse_id).words_with_strongs
     elsif request.referer&.match(/verses\/(\d+)/)
-      Verse.find($1).words.by_order
+      Verse.find($1).words_with_strongs
     else
       []
     end

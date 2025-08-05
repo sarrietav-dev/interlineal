@@ -1,7 +1,7 @@
 <% content_for :title, @verse.full_reference %>
 
-<div class="space-y-6 lg:space-y-8" 
-     data-controller="bible-navigation" 
+<div class="space-y-6 lg:space-y-8"
+     data-controller="bible-navigation"
      data-action="keydown@document->bible-navigation#keydown">
   <!-- Navigation Header -->
   <nav class="bg-gray-800 rounded-lg lg:rounded-xl p-4 lg:p-6">
@@ -9,15 +9,15 @@
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
         <!-- Book Selector -->
         <%= form_with url: bible_verse_path(@book.id, @chapter.chapter_number, @verse.verse_number), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
-          <%= select_tag :book_id, 
+          <%= select_tag :book_id,
               options_from_collection_for_select(@all_books, :id, :full_name, @book.id),
-              { 
+              {
                 class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
                 onchange: "this.form.submit()",
                 "aria-label": "Select Book"
               } %>
         <% end %>
-        
+
         <!-- Chapter Selector -->
         <%= form_with url: bible_verse_path(@book.id, 1, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
           <%= hidden_field_tag :book_id, @book.id %>
@@ -29,7 +29,7 @@
                 "aria-label": "Select Chapter"
               } %>
         <% end %>
-        
+
         <!-- Verse Selector -->
         <%= form_with url: bible_verse_path(@book.id, @chapter.chapter_number, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
           <%= hidden_field_tag :book_id, @book.id %>
@@ -43,20 +43,20 @@
               } %>
         <% end %>
       </div>
-      
+
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
-        <%= link_to "📺 #{t('bible.slideshow')}", bible_slideshow_path(@book.id, @chapter.chapter_number, @verse.verse_number), 
-            class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center", 
+        <%= link_to "📺 #{t('bible.slideshow')}", bible_slideshow_path(@book.id, @chapter.chapter_number, @verse.verse_number),
+            class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
             target: "_blank",
             title: t('slideshow.fullscreen'),
             data: { nav: "slideshow" } %>
-        
-        <%= link_to "🔍 #{t('bible.search')}", bible_search_path, 
+
+        <%= link_to "🔍 #{t('bible.search')}", bible_search_path,
             class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
 
-        <%= link_to "⚙️ #{t('settings.button')}", 
-            settings_path(verse_id: @verse.id), 
+        <%= link_to "⚙️ #{t('settings.button')}",
+            settings_path(verse_id: @verse.id),
             data: { turbo_frame: "settings-modal" },
             class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
       </div>
@@ -69,7 +69,7 @@
     <h1 class="text-2xl lg:text-4xl xl:text-5xl font-bold text-yellow-400 text-center mb-6 lg:mb-8">
       <%= @verse.full_reference %>
     </h1>
-    
+
     <!-- Spanish Text Display -->
     <% if @spanish_text.present? %>
       <div class="bg-gray-700 rounded-lg p-4 lg:p-6 mb-6 lg:mb-8 border-l-4 border-yellow-400">
@@ -78,7 +78,7 @@
         </p>
       </div>
     <% end %>
-    
+
     <!-- Interlinear Display -->
     <div class="interlinear-container" id="interlinear-display">
       <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
@@ -91,18 +91,18 @@
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
         <!-- Previous Controls -->
         <% if @prev_verse %>
-          <%= link_to "◄ #{t('bible.verse')} #{@prev_verse.verse_number}", 
+          <%= link_to "◄ #{t('bible.verse')} #{@prev_verse.verse_number}",
               bible_verse_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number),
               class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
               title: t('navigation.previous_verse'),
               accesskey: "p",
-              data: { 
+              data: {
                 nav: "prev",
                 turbo_frame: "verse-content"
               } %>
         <% elsif @prev_chapter %>
           <% last_verse = @prev_chapter.verses.by_number.last %>
-          <%= link_to "◄ #{@prev_chapter.chapter_number}:#{last_verse.verse_number}", 
+          <%= link_to "◄ #{@prev_chapter.chapter_number}:#{last_verse.verse_number}",
               bible_verse_path(@book.id, @prev_chapter.chapter_number, last_verse.verse_number),
               class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
               title: "Previous chapter",
@@ -110,28 +110,28 @@
         <% else %>
           <button class="bg-gray-600 text-gray-400 font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl min-w-32 text-center cursor-not-allowed" disabled>◄ <%= t('navigation.previous') %></button>
         <% end %>
-        
+
         <!-- Chapter View -->
-        <%= link_to "📖 #{t('bible.chapter')} #{@chapter.chapter_number}", 
+        <%= link_to "📖 #{t('bible.chapter')} #{@chapter.chapter_number}",
             bible_chapter_path(@book.id, @chapter.chapter_number),
             class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
             title: t('navigation.view_chapter') %>
       </div>
-      
+
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
         <!-- Next Controls -->
         <% if @next_verse %>
-          <%= link_to "#{t('bible.verse')} #{@next_verse.verse_number} ►", 
+          <%= link_to "#{t('bible.verse')} #{@next_verse.verse_number} ►",
               bible_verse_path(@book.id, @chapter.chapter_number, @next_verse.verse_number),
               class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
               title: t('navigation.next_verse'),
               accesskey: "n",
-              data: { 
+              data: {
                 nav: "next",
                 turbo_frame: "verse-content"
               } %>
         <% elsif @next_chapter %>
-          <%= link_to "#{@next_chapter.chapter_number}:1 ►", 
+          <%= link_to "#{@next_chapter.chapter_number}:1 ►",
               bible_verse_path(@book.id, @next_chapter.chapter_number, 1),
               class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
               title: "Next chapter",
@@ -145,31 +145,7 @@
 </div>
 
 <!-- Strong's Definition Popup using Turbo Frame -->
-<div data-controller="strongs" 
-     data-strongs-loading-text-value="<%= t('messages.loading') %>"
-     data-strongs-error-text-value="<%= t('messages.error_loading') %>"
-     data-action="keydown@document->strongs#keydown">
-  <div data-strongs-target="backdrop" 
-       class="fixed inset-0 bg-black bg-opacity-80 z-40" 
-       style="display: none;" 
-       data-action="click->strongs#backdropClick"></div>
-  <div data-strongs-target="popup" 
-       class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800 border-2 border-yellow-400 rounded-xl p-6 lg:p-8 max-w-4xl max-h-80vh overflow-y-auto z-50 shadow-2xl" 
-       style="display: none;">
-    <turbo-frame id="strong-definition" 
-                 data-strongs-target="frame"
-                 data-turbo-action="advance"
-                 data-action="turbo:frame-missing->strongs#frameError">
-      <!-- Strong's content will be loaded here -->
-    </turbo-frame>
-    <button data-action="click->strongs#close" 
-            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 mt-4">
-      ✕ <%= t('slideshow.exit') %>
-    </button>
-  </div>
-</div>
+<%= turbo_frame_tag "strong-definition" %>
 
 <!-- Settings Modal Frame -->
 <%= turbo_frame_tag "settings-modal" %>
-
-<!-- All JavaScript functionality is now handled by Stimulus controllers -->

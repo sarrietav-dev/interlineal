@@ -1,6 +1,6 @@
 <!-- Interlinear Words Display - Optimized for TV screens -->
 <div id="interlinear-words" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 lg:gap-6 mt-6 lg:mt-8">
-  <% 
+  <%
     # Use passed settings or fallback to defaults
     settings ||= {
       'show_greek' => true,
@@ -21,7 +21,7 @@
          <% else %>
            title="<%= t('messages.no_data') %>"
          <% end %>>
-      
+
       <!-- Greek Word -->
       <% if settings['show_greek'] %>
         <div class="greek-word mb-2 lg:mb-3">
@@ -34,7 +34,7 @@
           <% end %>
         </div>
       <% end %>
-      
+
       <!-- Spanish Translation -->
       <% if settings['show_spanish'] %>
         <div class="spanish-word mb-2 lg:mb-3">
@@ -47,7 +47,7 @@
           <% end %>
         </div>
       <% end %>
-      
+
       <!-- Strong's Number and Grammar -->
       <div class="metadata space-y-1">
         <% if settings['show_strongs'] && word.strong_number.present? %>
@@ -57,7 +57,7 @@
             </span>
           </div>
         <% end %>
-        
+
         <% if settings['show_grammar'] && word.greek_grammar.present? %>
           <div class="grammar">
             <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
@@ -65,16 +65,16 @@
             </span>
           </div>
         <% end %>
-        
-        <% if settings['show_pronunciation'] && word.respond_to?(:pronunciation) && word.pronunciation.present? %>
+
+        <% if settings['show_pronunciation'] && word.strong&.pronunciation.present? %>
           <div class="pronunciation">
             <span class="inline-block bg-purple-600 text-purple-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
-              /<%= word.pronunciation %>/
+              /<%= word.strong.pronunciation %>/
             </span>
           </div>
         <% end %>
       </div>
-      
+
       <!-- Word Order -->
       <% if settings['show_word_order'] %>
         <div class="word-order mt-2 lg:mt-3">
@@ -114,7 +114,7 @@
     outline: 3px solid #fbbf24;
     outline-offset: 2px;
   }
-  
+
   @media (min-width: 1920px) {
     .greek-word span {
       font-size: 1.75rem;
@@ -127,13 +127,13 @@
       font-size: 1rem;
     }
   }
-  
+
   @media (max-width: 768px) {
     .interlinear-word {
       min-height: 120px;
     }
   }
-  
+
   /* High contrast mode for better TV visibility */
   @media (prefers-contrast: high) {
     .interlinear-word {

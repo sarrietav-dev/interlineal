@@ -2,7 +2,7 @@ en:
   app:
     name: "Interlinear Bible"
     subtitle: "Word-by-word Greek-Spanish Bible study"
-  
+
   bible:
     book: "Book"
     books: "Books"
@@ -18,7 +18,7 @@ en:
     presentation: "Presentation"
     home: "Home"
     back_to_home: "Back to Home"
-    
+
   navigation:
     previous: "Previous"
     next: "Next"
@@ -31,9 +31,9 @@ en:
     study: "Study"
     navigation: "Navigation"
     back: "Back"
-    
+
   keyboard_shortcuts: "Keyboard shortcuts"
-    
+
   search:
     title: "Search the Scriptures"
     placeholder: "Search for words in Spanish, Greek, Strong's (e.g. G3754) or reference..."
@@ -53,7 +53,7 @@ en:
     matching_words: "Matching words:"
     statistics: "Search Statistics"
     coincidences: "Matches"
-    
+
   strongs:
     definition: "Definition:"
     pronunciation: "Pronunciation:"
@@ -66,25 +66,25 @@ en:
     showing: "showing"
     of: "of"
     not_found: "Strong's number not found"
-    search_related: "Search for \"%{word}\" in the entire Bible"
-    
+    search_related: 'Search for "%{word}" in the entire Bible'
+
   tv:
     instructions: "TV Display Instructions"
     navigation_help: "Navigation: Use arrow keys ← → or P/N keys to navigate between verses"
-    slideshow_help: "Slideshow: Click \"📺 Slideshow\" button for full-screen presentation mode"
+    slideshow_help: 'Slideshow: Click "📺 Slideshow" button for full-screen presentation mode'
     strongs_help: "Strong's: Click on any Greek word to see its Strong's concordance definition"
     keyboard_help: "Keyboard shortcuts: Ctrl+S for slideshow, Escape to close popups"
-    
+
   slideshow:
     exit: "Exit"
     fullscreen: "Fullscreen"
     navigation_hint: "Use ← → or P/N to navigate • Move mouse to show controls"
-    
+
   stats:
     chapter_statistics: "Chapter Statistics"
     times: "times"
     time: "time"
-    
+
   messages:
     no_data: "No biblical data available"
     no_verses: "No verses available"
@@ -92,12 +92,12 @@ en:
     spanish_only: "Only the Spanish text is displayed above."
     loading: "Loading..."
     error_loading: "Error loading definition"
-    
+
   errors:
     book_not_found: "Book not found"
     chapter_not_found: "Chapter not found"
     verse_not_found: "Verse not found"
-    
+
   settings:
     button: "Settings"
     title: "Word Display Settings"
@@ -116,3 +116,4 @@ en:
     show_word_order_desc: "Show numerical position"
     reset_defaults: "Reset Defaults"
     done: "Done"
+    close: "Close"

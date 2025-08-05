@@ -1,12 +1,22 @@
 <!-- Partial for verse content within Turbo Frame -->
 <%= turbo_frame_tag "verse-content" do %>
-  <section class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
+  <section
+    class="
+      bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700
+    "
+  >
     <!-- Verse Reference -->
-    <h1 class="verse-reference text-3xl lg:text-5xl xl:text-6xl font-bold text-center mb-6 lg:mb-8 text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded-lg" tabindex="0">
+    <h1
+      class="
+        verse-reference text-3xl lg:text-5xl xl:text-6xl font-bold text-center mb-6
+        lg:mb-8 text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400
+        rounded-lg
+      "
+      tabindex="0"
+    >
       <%= @verse.full_reference %>
     </h1>
-    
     <!-- Interlinear Words Display -->
-    <%= render 'interlinear_words', words: @verse.words.by_order %>
+    <%= render "interlinear_words", words: @verse.words.by_order %>
   </section>
 <% end %>
