@@ -1,0 +1,83 @@
+<%= turbo_frame_tag "slideshow-content" do %>
+  <div class="slideshow-container">
+    <!-- Verse Reference -->
+    <h1 class="verse-reference">
+      <%= @verse.full_reference %>
+    </h1>
+    
+    <!-- Spanish Text -->
+    <% if @spanish_text.present? %>
+      <div class="spanish-text">
+        <%= @spanish_text %>
+      </div>
+    <% end %>
+    
+    <!-- Interlinear Display -->
+    <% if @words.present? %>
+      <div class="interlinear-container">
+        <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Navigation Controls -->
+  <div class="controls" data-slideshow-target="controls">
+    <% if @prev_verse %>
+      <%= link_to "◄ #{t('bible.verse')} #{@prev_verse.verse_number}",
+          bible_slideshow_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number),
+          class: "control-btn",
+          title: t('navigation.previous_verse'),
+          data: { 
+            slideshow_nav: "prev",
+            turbo_frame: "slideshow-content"
+          } %>
+    <% elsif @prev_chapter %>
+      <% last_verse = @prev_chapter.verses.by_number.last %>
+      <%= link_to "◄ #{@prev_chapter.chapter_number}:#{last_verse.verse_number}",
+          bible_slideshow_path(@book.id, @prev_chapter.chapter_number, last_verse.verse_number),
+          class: "control-btn",
+          title: t('navigation.previous_chapter'),
+          data: { 
+            slideshow_nav: "prev",
+            turbo_frame: "slideshow-content"
+          } %>
+    <% else %>
+      <button class="control-btn" disabled data-slideshow-nav="prev">◄ <%= t('navigation.previous') %></button>
+    <% end %>
+    
+    <button class="control-btn" 
+            data-action="click->slideshow#toggleFullscreen" 
+            title="<%= t('slideshow.fullscreen') %>">
+      🖥️ <%= t('slideshow.fullscreen') %>
+    </button>
+    
+    <a href="<%= bible_verse_path(@book.id, @chapter.chapter_number, @verse.verse_number) %>" 
+       class="control-btn" title="<%= t('slideshow.exit') %>"
+       data-slideshow-nav="exit"
+       data-turbo="false">
+      ✕ <%= t('slideshow.exit') %>
+    </a>
+    
+    <% if @next_verse %>
+      <%= link_to "#{t('bible.verse')} #{@next_verse.verse_number} ►",
+          bible_slideshow_path(@book.id, @chapter.chapter_number, @next_verse.verse_number),
+          class: "control-btn",
+          title: t('navigation.next_verse'),
+          data: { 
+            slideshow_nav: "next",
+            turbo_frame: "slideshow-content"
+          } %>
+    <% elsif @next_chapter %>
+      <%= link_to "#{@next_chapter.chapter_number}:1 ►",
+          bible_slideshow_path(@book.id, @next_chapter.chapter_number, 1),
+          class: "control-btn",
+          title: t('navigation.next_chapter'),
+          data: { 
+            slideshow_nav: "next",
+            turbo_frame: "slideshow-content"
+          } %>
+    <% else %>
+      <button class="control-btn" disabled data-slideshow-nav="next"><%= t('navigation.next') %> ►</button>
+    <% end %>
+  </div>
+<% end %>

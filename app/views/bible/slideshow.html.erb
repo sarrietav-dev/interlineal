@@ -166,6 +166,15 @@
       
       /* Better hover states for slideshow */
       transition: all 0.3s ease;
+      
+      /* Improved sizing and spacing for slideshow */
+      padding: clamp(0.75rem, 2vw, 1.5rem);
+      margin: clamp(0.5rem, 1vw, 1rem);
+      min-width: clamp(8rem, 15vw, 12rem);
+      min-height: clamp(6rem, 12vh, 8rem);
+      
+      /* Better visual separation */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .slideshow-container .interlinear-word:hover {
@@ -174,17 +183,39 @@
       transform: scale(1.02);
     }
 
-    /* Enhanced contrast for slideshow mode */
-    .slideshow-container .greek-word span {
+    /* Enhanced contrast and sizing for slideshow mode */
+    .slideshow-container .greek-word span,
+    .slideshow-container .greek-word a {
       color: #dbeafe;
       font-weight: 600;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+      /* Significantly larger Greek text for slideshow */
+      font-size: clamp(1.25rem, 3vw, 3rem) !important;
+      line-height: 1.3;
+    }
+
+    .slideshow-container .greek-word {
+      /* Increase padding and margins for better bounds */
+      padding: clamp(0.75rem, 2vw, 1.5rem) !important;
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem) !important;
+      min-height: clamp(3rem, 6vh, 5rem);
+      border-radius: clamp(8px, 1vw, 16px);
     }
 
     .slideshow-container .spanish-word span {
       color: #ffffff;
       font-weight: 500;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+      /* Adjust Spanish text size proportionally */
+      font-size: clamp(1rem, 2.5vw, 2.5rem) !important;
+      line-height: 1.4;
+    }
+
+    .slideshow-container .spanish-word {
+      /* Increase padding for Spanish words too */
+      padding: clamp(0.5rem, 1.5vw, 1rem) !important;
+      margin-bottom: clamp(0.5rem, 1.5vh, 1rem) !important;
+      min-height: clamp(2.5rem, 5vh, 4rem);
     }
 
     /* Improved scrolling for long verses */
@@ -249,74 +280,7 @@
 </head>
   <body data-controller="slideshow" 
         data-action="mousemove->slideshow#mousemove keydown@document->slideshow#keydown">
-  <div class="slideshow-container">
-    <!-- Verse Reference -->
-    <h1 class="verse-reference">
-      <%= @verse.full_reference %>
-    </h1>
-    
-    <!-- Spanish Text -->
-    <% if @spanish_text.present? %>
-      <div class="spanish-text">
-        <%= @spanish_text %>
-      </div>
-    <% end %>
-    
-    <!-- Interlinear Display -->
-    <% if @words.present? %>
-      <div class="interlinear-container">
-        <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
-      </div>
-    <% end %>
-  </div>
-  
-  <!-- Navigation Controls -->
-  <div class="controls" data-slideshow-target="controls">
-    <% if @prev_verse %>
-      <a href="<%= bible_slideshow_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number) %>" 
-         class="control-btn" title="<%= t('navigation.previous_verse') %>"
-         data-slideshow-nav="prev">
-        ◄ <%= t('bible.verse') %> <%= @prev_verse.verse_number %>
-      </a>
-    <% elsif @prev_chapter %>
-      <% last_verse = @prev_chapter.verses.by_number.last %>
-      <a href="<%= bible_slideshow_path(@book.id, @prev_chapter.chapter_number, last_verse.verse_number) %>" 
-         class="control-btn" title="<%= t('navigation.previous_chapter') %>"
-         data-slideshow-nav="prev">
-        ◄ <%= @prev_chapter.chapter_number %>:<%= last_verse.verse_number %>
-      </a>
-    <% else %>
-      <button class="control-btn" disabled data-slideshow-nav="prev">◄ <%= t('navigation.previous') %></button>
-    <% end %>
-    
-    <button class="control-btn" 
-            data-action="click->slideshow#toggleFullscreen" 
-            title="<%= t('slideshow.fullscreen') %>">
-      🖥️ <%= t('slideshow.fullscreen') %>
-    </button>
-    
-    <a href="<%= bible_verse_path(@book.id, @chapter.chapter_number, @verse.verse_number) %>" 
-       class="control-btn" title="<%= t('slideshow.exit') %>"
-       data-slideshow-nav="exit">
-      ✕ <%= t('slideshow.exit') %>
-    </a>
-    
-    <% if @next_verse %>
-      <a href="<%= bible_slideshow_path(@book.id, @chapter.chapter_number, @next_verse.verse_number) %>" 
-         class="control-btn" title="<%= t('navigation.next_verse') %>"
-         data-slideshow-nav="next">
-        <%= t('bible.verse') %> <%= @next_verse.verse_number %> ►
-      </a>
-    <% elsif @next_chapter %>
-      <a href="<%= bible_slideshow_path(@book.id, @next_chapter.chapter_number, 1) %>" 
-         class="control-btn" title="<%= t('navigation.next_chapter') %>"
-         data-slideshow-nav="next">
-        <%= @next_chapter.chapter_number %>:1 ►
-      </a>
-    <% else %>
-      <button class="control-btn" disabled data-slideshow-nav="next"><%= t('navigation.next') %> ►</button>
-    <% end %>
-  </div>
+  <%= render 'slideshow_content' %>
   
   <!-- Navigation Hint -->
   <div class="navigation-hint" data-slideshow-target="hints">
@@ -327,6 +291,9 @@
   <div class="scroll-indicator" data-slideshow-target="scrollIndicator">
     <div class="scroll-indicator-thumb" data-slideshow-target="scrollThumb"></div>
   </div>
+
+  <!-- Strong's Definition Modal Frame -->
+  <%= turbo_frame_tag "strong-definition-modal" %>
   
   <!-- All slideshow functionality is now handled by Stimulus controller -->
 </body>

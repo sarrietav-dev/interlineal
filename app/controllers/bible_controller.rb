@@ -83,7 +83,11 @@ class BibleController < ApplicationController
     # Load word display settings
     @word_display_settings = load_word_display_settings
 
-    render layout: false
+    if turbo_frame_request?
+      render partial: "slideshow_content", layout: false
+    else
+      render layout: false
+    end
   end
 
   # GET /books/:book_id/chapters/:chapter_number/verses/:verse_number/interlinear

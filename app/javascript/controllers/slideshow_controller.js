@@ -8,6 +8,7 @@ export default class extends Controller {
     this.controlsTimeout = null
     this.hintsTimeout = null
     this.cursorTimeout = null
+    this.isNavigating = false
     
     // Setup scroll indicator
     this.setupScrollIndicator()
@@ -21,11 +22,22 @@ export default class extends Controller {
     }, 1000)
     
     this.showCursor()
+    
+    // Listen for Turbo frame loads to reset navigation state
+    document.addEventListener('turbo:frame-load', (event) => {
+      this.isNavigating = false
+    })
+    
+    // Also listen for turbo:load to reset on full page loads
+    document.addEventListener('turbo:load', () => {
+      this.isNavigating = false
+    })
   }
 
   disconnect() {
     this.clearTimeouts()
     this.removeScrollListener()
+    this.isNavigating = false
   }
 
   // Setup scroll indicator and listener
@@ -105,7 +117,6 @@ export default class extends Controller {
 
   // Show controls on mouse movement
   mousemove() {
-    console.log('mousemove')
     this.showControls()
     this.showHints()
     this.showCursor()
@@ -123,7 +134,11 @@ export default class extends Controller {
 
   // Enhanced keyboard navigation for slideshow with scroll controls
   keydown(event) {
-    console.log('keydown', event)
+    // Prevent multiple rapid key presses
+    if (this.isNavigating) {
+      return
+    }
+    
     const prevLinks = document.querySelectorAll('[data-slideshow-nav="prev"]')
     const nextLinks = document.querySelectorAll('[data-slideshow-nav="next"]')
     const exitLinks = document.querySelectorAll('[data-slideshow-nav="exit"]')
@@ -141,16 +156,18 @@ export default class extends Controller {
       case 'p':
       case 'P':
         event.preventDefault()
-        if (prevLink) {
-          window.location.href = prevLink.href
+        if (prevLink && !this.isNavigating) {
+          this.isNavigating = true
+          prevLink.click()
         }
         break
       case 'ArrowRight':
       case 'n':
       case 'N':
         event.preventDefault()
-        if (nextLink) {
-          window.location.href = nextLink.href
+        if (nextLink && !this.isNavigating) {
+          this.isNavigating = true
+          nextLink.click()
         }
         break
       case 'ArrowUp':
@@ -181,6 +198,7 @@ export default class extends Controller {
       case 'Escape':
         event.preventDefault()
         if (exitLink) {
+          // Use window.location for exit to avoid Turbo frame issues
           window.location.href = exitLink.href
         }
         break
