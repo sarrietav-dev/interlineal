@@ -134,28 +134,7 @@ class BibleController < ApplicationController
     @strong = Strong.find_by(strong_number: params[:strong_number])
 
     if @strong
-      @verses_with_word = @strong.verses_with_this_word.limit(20)
-
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update("strong-definition",
-            render_to_string(partial: "strong_definition",
-                           locals: { strong: @strong, verses: @verses_with_word }))
-        end
-        format.html do
-          render partial: "strong_definition", locals: { strong: @strong, verses: @verses_with_word }
-        end
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update("strong-definition",
-            render_to_string(partial: "strong_not_found"))
-        end
-        format.html do
-          render partial: "strong_not_found"
-        end
-      end
+      @verses_with_word = @strong.verses_with_this_word.first(20)
     end
   end
 
