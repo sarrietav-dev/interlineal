@@ -1,5 +1,5 @@
 <!-- Interlinear Words Display - Optimized for TV screens -->
-<div id="interlinear-words" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 lg:gap-6 mt-6 lg:mt-8">
+<div id="interlinear-words" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 lg:gap-4 mt-6 lg:mt-8">
   <%
     # Use passed settings or fallback to defaults
     settings ||= {
@@ -12,7 +12,7 @@
     }
   %>
   <% words.each_with_index do |word, word_index| %>
-    <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg p-3 lg:p-4 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400"
+    <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg p-3 lg:p-4 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400 min-h-[120px] flex flex-col justify-between"
          <% if word.strong_number.present? %>
            title="<%= t('tv.strongs_help') %>"
            tabindex="0"
@@ -22,41 +22,41 @@
 
       <!-- Greek Word -->
       <% if settings['show_greek'] %>
-        <div class="greek-word mb-2 lg:mb-3">
+        <div class="greek-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
           <% if word.greek_word.present? %>
             <% if word.strong_number.present? %>
               <%= link_to strong_definition_path(word.strong_number),
-                  class: "block text-sm lg:text-xl xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200",
+                  class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200 break-words hyphens-auto",
                   data: { turbo_frame: "strong-definition-modal" },
                   title: "Ver definición Strong's" do %>
                 <%= word.greek_word %>
               <% end %>
             <% else %>
-              <span class="block text-sm lg:text-xl xl:text-2xl font-medium text-sky-300 leading-tight">
+              <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight break-words hyphens-auto">
                 <%= word.greek_word %>
               </span>
             <% end %>
           <% else %>
-            <span class="block text-sm lg:text-xl xl:text-2xl font-medium text-gray-400 leading-tight">—</span>
+            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-gray-400 leading-tight">—</span>
           <% end %>
         </div>
       <% end %>
 
       <!-- Spanish Translation -->
       <% if settings['show_spanish'] %>
-        <div class="spanish-word mb-2 lg:mb-3">
+        <div class="spanish-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
           <% if word.spanish_translation.present? %>
-            <span class="block text-sm lg:text-lg xl:text-xl font-normal text-white leading-tight">
+            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-white leading-tight break-words hyphens-auto">
               <%= word.spanish_translation %>
             </span>
           <% else %>
-            <span class="block text-sm lg:text-lg xl:text-xl font-normal text-gray-400 leading-tight">—</span>
+            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-gray-400 leading-tight">—</span>
           <% end %>
         </div>
       <% end %>
 
       <!-- Strong's Number and Grammar -->
-      <div class="metadata space-y-1">
+      <div class="metadata space-y-1 mt-auto">
         <% if settings['show_strongs'] && word.strong_number.present? %>
           <div class="strong-number">
             <span class="inline-block bg-yellow-600 text-yellow-100 text-xs lg:text-sm font-semibold px-2 py-1 rounded-md leading-none">
@@ -104,22 +104,49 @@
   </div>
 <% end %>
 
-<!-- Instructions for TV display -->
-<div class="mt-8 lg:mt-12 p-4 lg:p-6 bg-gray-700 rounded-lg border border-gray-600">
-  <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3 lg:mb-4">📺 <%= t('tv.instructions') %></h3>
-  <div class="text-sm lg:text-base text-gray-300 space-y-2 lg:space-y-3">
-    <p><strong><%= t('navigation.navigation') %>:</strong> <%= t('tv.navigation_help') %></p>
-    <p><strong><%= t('bible.slideshow') %>:</strong> <%= t('tv.slideshow_help') %></p>
-    <p><strong>Strong's:</strong> <%= t('tv.strongs_help') %></p>
-    <p><strong><%= t('keyboard_shortcuts') %>:</strong> <%= t('tv.keyboard_help') %></p>
-  </div>
-</div>
-
 <style>
   /* Additional TV-optimized styling */
   .interlinear-word:focus {
     outline: 3px solid #fbbf24;
     outline-offset: 2px;
+  }
+
+  /* Flexible word box sizing */
+  .interlinear-word {
+    min-width: 120px;
+    max-width: 300px;
+    width: 100%;
+  }
+
+  /* Responsive grid adjustments */
+  @media (min-width: 640px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+
+  @media (min-width: 1536px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
   }
 
   @media (min-width: 1920px) {
@@ -137,7 +164,7 @@
 
   @media (max-width: 768px) {
     .interlinear-word {
-      min-height: 120px;
+      min-height: 100px;
     }
   }
 
@@ -155,5 +182,66 @@
       color: #ffffff;
       font-weight: 500;
     }
+  }
+
+  /* Word wrapping for long Greek words */
+  .greek-word span,
+  .spanish-word span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Additional responsive improvements */
+  @media (max-width: 480px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.5rem;
+    }
+    
+    .interlinear-word {
+      min-height: 80px;
+      padding: 0.5rem;
+    }
+    
+    .greek-word span {
+      font-size: 0.875rem;
+    }
+    
+    .spanish-word span {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Ultra-wide screen support */
+  @media (min-width: 2560px) {
+    #interlinear-words {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+    }
+    
+    .greek-word span {
+      font-size: 2rem;
+    }
+    
+    .spanish-word span {
+      font-size: 1.75rem;
+    }
+  }
+
+  /* Better word box sizing for very long words */
+  .interlinear-word {
+    min-width: 120px;
+    max-width: 350px;
+    width: 100%;
+    height: auto;
+    min-height: 120px;
+  }
+
+  /* Ensure text doesn't overflow */
+  .greek-word,
+  .spanish-word {
+    max-width: 100%;
+    overflow: hidden;
   }
 </style>

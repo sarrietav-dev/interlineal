@@ -80,6 +80,9 @@ class BibleController < ApplicationController
     @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
     @next_chapter = @chapter.next_chapter if @next_verse.nil?
 
+    # Load word display settings
+    @word_display_settings = load_word_display_settings
+
     render layout: false
   end
 
