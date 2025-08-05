@@ -4,16 +4,23 @@ class Strong < ApplicationRecord
 
   # Validations
   validates :strong_number, presence: true, uniqueness: true
-  validates :greek_word, presence: true
+  validates :greek_word, presence: true, unless: :hebrew_word?
+  validates :hebrew_word, presence: true, unless: :greek_word?
 
   # Scopes
   scope :by_number, -> { order(:strong_number) }
   scope :with_definitions, -> { where.not(definition: [ nil, "" ]) }
   scope :by_part_of_speech, ->(pos) { where(part_of_speech: pos) }
+  scope :greek, -> { where(language: "greek") }
+  scope :hebrew, -> { where(language: "hebrew") }
 
   # Instance methods
   def display_number
-    "G#{strong_number}"
+    if hebrew_word.present?
+      "H#{strong_number}"
+    else
+      "G#{strong_number}"
+    end
   end
 
   def full_definition
@@ -34,6 +41,7 @@ class Strong < ApplicationRecord
   def searchable_text
     [
       greek_word,
+      hebrew_word,
       pronunciation,
       definition,
       definition2,
@@ -41,5 +49,15 @@ class Strong < ApplicationRecord
       derivation,
       rv1909_definition
     ].compact.join(" ")
+  end
+
+  def language
+    if hebrew_word.present?
+      "hebrew"
+    elsif greek_word.present?
+      "greek"
+    else
+      super
+    end
   end
 end

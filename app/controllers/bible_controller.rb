@@ -78,7 +78,7 @@ class BibleController < ApplicationController
     @prev_verse = @verse.previous_verse
     @next_verse = @verse.next_verse
     @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
-    @next_chapter = @chapter.next_chapter if @next_verse.nil?
+    @next_chapter = @chapter.next_chapter if @prev_verse.nil?
 
     # Load word display settings
     @word_display_settings = load_word_display_settings
@@ -112,13 +112,14 @@ class BibleController < ApplicationController
                             .includes(:chapter, :book)
                             .limit(50)
 
-      # Search in Greek words
-      greek_results = Word.joins(verse: { chapter: :book })
-                         .where("greek_word LIKE ? OR spanish_translation LIKE ?", "%#{@query}%", "%#{@query}%")
-                         .includes(verse: { chapter: :book })
-                         .limit(50)
-                         .map(&:verse)
-                         .uniq
+      # Search in Greek and Hebrew words
+      greek_hebrew_results = Word.joins(verse: { chapter: :book })
+                                .where("greek_word LIKE ? OR hebrew_word LIKE ? OR spanish_translation LIKE ?",
+                                       "%#{@query}%", "%#{@query}%", "%#{@query}%")
+                                .includes(verse: { chapter: :book })
+                                .limit(50)
+                                .map(&:verse)
+                                .uniq
 
       # Search in Strong's definitions
       strong_results = Strong.joins(words: { verse: { chapter: :book } })
@@ -128,7 +129,7 @@ class BibleController < ApplicationController
                            .flat_map(&:verses_with_this_word)
                            .uniq
 
-      @results = (spanish_results + greek_results + strong_results).uniq.sort_by do |verse|
+      @results = (spanish_results + greek_hebrew_results + strong_results).uniq.sort_by do |verse|
         [ verse.book.name, verse.chapter.chapter_number, verse.verse_number ]
       end
     end
@@ -170,6 +171,7 @@ class BibleController < ApplicationController
   def load_word_display_settings
     default_settings = {
       "show_greek" => true,
+      "show_hebrew" => true,
       "show_spanish" => true,
       "show_strongs" => true,
       "show_grammar" => true,

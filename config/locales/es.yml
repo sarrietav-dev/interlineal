@@ -1,7 +1,7 @@
 es:
   app:
     name: "Biblia Interlineal"
-    subtitle: "Estudio bíblico palabra por palabra Griego-Español"
+    subtitle: "Estudio bíblico palabra por palabra Griego-Hebreo-Español"
   
   bible:
     book: "Libro"
@@ -36,7 +36,7 @@ es:
     
   search:
     title: "Búsqueda en las Escrituras"
-    placeholder: "Buscar por palabra en español, griego, Strong's (ej: G3754) o referencia..."
+    placeholder: "Buscar por palabra en español, griego, hebreo, Strong's (ej: G3754, H3068) o referencia..."
     button: "Buscar"
     results: "Resultados para"
     result: "resultado"
@@ -48,7 +48,8 @@ es:
     tips: "Consejos de Búsqueda"
     spanish_example: "Español: amor, fe, esperanza"
     greek_example: "Griego: ἀγάπη, λόγος, θεός"
-    strongs_example: "Strong's: G26, G3056, G2316"
+    hebrew_example: "Hebreo: אַהֲבָה, אֱמוּנָה, תִּקְוָה"
+    strongs_example: "Strong's: G26, G3056, G2316, H157, H530, H8615"
     popular_searches: "Búsquedas Populares"
     matching_words: "Palabras coincidentes:"
     statistics: "Estadísticas de Búsqueda"
@@ -72,7 +73,7 @@ es:
     instructions: "Instrucciones para Pantalla TV"
     navigation_help: "Navegación: Use las flechas ← → o teclas P/N para navegar entre versículos"
     slideshow_help: "Presentación: Haga clic en \"📺 Presentación\" para modo pantalla completa"
-    strongs_help: "Strong's: Haga clic en cualquier palabra griega para ver su definición Strong"
+    strongs_help: "Strong's: Haga clic en cualquier palabra griega o hebrea para ver su definición Strong"
     keyboard_help: "Atajos de teclado: Ctrl+S para presentación, Escape para cerrar ventanas"
     
   slideshow:
@@ -104,6 +105,8 @@ es:
     description: "Personaliza qué información mostrar para cada palabra en el texto interlineal."
     show_greek: "Texto Griego"
     show_greek_desc: "Mostrar la palabra original en griego"
+    show_hebrew: "Texto Hebreo"
+    show_hebrew_desc: "Mostrar la palabra original en hebreo"
     show_spanish: "Traducción Español"
     show_spanish_desc: "Mostrar la traducción en español"
     show_strongs: "Números Strong"
@@ -111,9 +114,10 @@ es:
     show_grammar: "Información Gramatical"
     show_grammar_desc: "Mostrar tipo de palabra y género"
     show_pronunciation: "Pronunciación"
-    show_pronunciation_desc: "Mostrar guía fonética del griego"
+    show_pronunciation_desc: "Mostrar guía fonética del griego/hebreo"
     show_word_order: "Orden de Palabra"
     show_word_order_desc: "Mostrar posición numérica"
     reset_defaults: "Restaurar Predeterminados"
     apply: "Aplicar"
     done: "Listo"
+    close: "Cerrar"

@@ -14,7 +14,10 @@ class Word < ApplicationRecord
   scope :for_verse, ->(verse_id) { where(verse_id: verse_id) }
   scope :with_strongs, -> { where.not(strong_number: [ nil, "" ]) }
   scope :with_greek, -> { where.not(greek_word: [ nil, "" ]) }
+  scope :with_hebrew, -> { where.not(hebrew_word: [ nil, "" ]) }
   scope :with_spanish, -> { where.not(spanish_translation: [ nil, "" ]) }
+  scope :greek, -> { where(language: "greek") }
+  scope :hebrew, -> { where(language: "hebrew") }
 
   # Instance methods
   def full_reference
@@ -25,12 +28,24 @@ class Word < ApplicationRecord
     greek_word.present? ? greek_word : "N/A"
   end
 
+  def display_hebrew
+    hebrew_word.present? ? hebrew_word : "N/A"
+  end
+
   def display_spanish
     spanish_translation.present? ? spanish_translation : "N/A"
   end
 
   def display_strong
-    strong_number.present? ? "G#{strong_number}" : "N/A"
+    if strong_number.present?
+      if hebrew_word.present?
+        "H#{strong_number}"
+      else
+        "G#{strong_number}"
+      end
+    else
+      "N/A"
+    end
   end
 
   def has_strong_definition?
@@ -44,9 +59,21 @@ class Word < ApplicationRecord
   def searchable_text
     [
       greek_word,
+      hebrew_word,
       spanish_translation,
       greek_grammar,
+      hebrew_grammar,
       strong_number
     ].compact.join(" ")
+  end
+
+  def language
+    if hebrew_word.present?
+      "hebrew"
+    elsif greek_word.present?
+      "greek"
+    else
+      super
+    end
   end
 end

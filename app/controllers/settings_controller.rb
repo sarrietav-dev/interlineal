@@ -8,7 +8,7 @@ class SettingsController < ApplicationController
     @verse_id = params.dig(:settings, :verse_id)
 
     new_settings = params.permit(
-      :show_greek, :show_spanish, :show_strongs,
+      :show_greek, :show_hebrew, :show_spanish, :show_strongs,
       :show_grammar, :show_pronunciation, :show_word_order
     ).to_h.transform_values { |v| v == "1" || v == "true" }
 
@@ -64,6 +64,7 @@ class SettingsController < ApplicationController
   def default_settings
     {
       "show_greek" => true,
+      "show_hebrew" => true,
       "show_spanish" => true,
       "show_strongs" => true,
       "show_grammar" => true,

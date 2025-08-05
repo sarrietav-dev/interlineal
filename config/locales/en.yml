@@ -1,7 +1,7 @@
 en:
   app:
     name: "Interlinear Bible"
-    subtitle: "Word-by-word Greek-Spanish Bible study"
+    subtitle: "Word-by-word Greek-Hebrew-Spanish Bible study"
 
   bible:
     book: "Book"
@@ -36,7 +36,7 @@ en:
 
   search:
     title: "Search the Scriptures"
-    placeholder: "Search for words in Spanish, Greek, Strong's (e.g. G3754) or reference..."
+    placeholder: "Search for words in Spanish, Greek, Hebrew, Strong's (e.g. G3754, H3068) or reference..."
     button: "Search"
     results: "Results for"
     result: "result"
@@ -48,7 +48,8 @@ en:
     tips: "Search Tips"
     spanish_example: "Spanish: love, faith, hope"
     greek_example: "Greek: ἀγάπη, λόγος, θεός"
-    strongs_example: "Strong's: G26, G3056, G2316"
+    hebrew_example: "Hebrew: אַהֲבָה, אֱמוּנָה, תִּקְוָה"
+    strongs_example: "Strong's: G26, G3056, G2316, H157, H530, H8615"
     popular_searches: "Popular Searches"
     matching_words: "Matching words:"
     statistics: "Search Statistics"
@@ -72,7 +73,7 @@ en:
     instructions: "TV Display Instructions"
     navigation_help: "Navigation: Use arrow keys ← → or P/N keys to navigate between verses"
     slideshow_help: 'Slideshow: Click "📺 Slideshow" button for full-screen presentation mode'
-    strongs_help: "Strong's: Click on any Greek word to see its Strong's concordance definition"
+    strongs_help: "Strong's: Click on any Greek or Hebrew word to see its Strong's concordance definition"
     keyboard_help: "Keyboard shortcuts: Ctrl+S for slideshow, Escape to close popups"
 
   slideshow:
@@ -104,6 +105,8 @@ en:
     description: "Customize which information to show for each word in the interlinear text."
     show_greek: "Greek Text"
     show_greek_desc: "Show original Greek word"
+    show_hebrew: "Hebrew Text"
+    show_hebrew_desc: "Show original Hebrew word"
     show_spanish: "Spanish Translation"
     show_spanish_desc: "Show Spanish translation"
     show_strongs: "Strong's Numbers"
@@ -111,7 +114,7 @@ en:
     show_grammar: "Grammar Information"
     show_grammar_desc: "Show word type and gender"
     show_pronunciation: "Pronunciation"
-    show_pronunciation_desc: "Show Greek phonetic guide"
+    show_pronunciation_desc: "Show Greek/Hebrew phonetic guide"
     show_word_order: "Word Order"
     show_word_order_desc: "Show numerical position"
     reset_defaults: "Reset Defaults"

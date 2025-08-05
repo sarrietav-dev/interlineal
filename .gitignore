@@ -35,3 +35,7 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+juan_sites/juan_interlineal/
+juan_sites/strong
+juan_sites/node_modules
+juan_sites/target

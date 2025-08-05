@@ -4,6 +4,7 @@
     # Use passed settings or fallback to defaults
     settings ||= {
       'show_greek' => true,
+      'show_hebrew' => true,
       'show_spanish' => true,
       'show_strongs' => true,
       'show_grammar' => true,
@@ -21,23 +22,37 @@
          <% end %>>
 
       <!-- Greek Word -->
-      <% if settings['show_greek'] %>
+      <% if settings['show_greek'] && word.greek_word.present? %>
         <div class="greek-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
-          <% if word.greek_word.present? %>
-            <% if word.strong_number.present? %>
-              <%= link_to strong_definition_path(word.strong_number),
-                  class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200 break-words hyphens-auto",
-                  data: { turbo_frame: "strong-definition-modal" },
-                  title: "Ver definición Strong's" do %>
-                <%= word.greek_word %>
-              <% end %>
-            <% else %>
-              <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight break-words hyphens-auto">
-                <%= word.greek_word %>
-              </span>
+          <% if word.strong_number.present? %>
+            <%= link_to strong_definition_path(word.strong_number),
+                class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200 break-words hyphens-auto",
+                data: { turbo_frame: "strong-definition-modal" },
+                title: "Ver definición Strong's" do %>
+              <%= word.greek_word %>
             <% end %>
           <% else %>
-            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-gray-400 leading-tight">—</span>
+            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight break-words hyphens-auto">
+              <%= word.greek_word %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+
+      <!-- Hebrew Word -->
+      <% if settings['show_hebrew'] && word.hebrew_word.present? %>
+        <div class="hebrew-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
+          <% if word.strong_number.present? %>
+            <%= link_to strong_definition_path(word.strong_number),
+                class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-orange-300 leading-tight hover:text-orange-200 transition-colors duration-200 break-words hyphens-auto",
+                data: { turbo_frame: "strong-definition-modal" },
+                title: "Ver definición Strong's" do %>
+              <%= word.hebrew_word %>
+            <% end %>
+          <% else %>
+            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-orange-300 leading-tight break-words hyphens-auto">
+              <%= word.hebrew_word %>
+            </span>
           <% end %>
         </div>
       <% end %>
@@ -60,17 +75,25 @@
         <% if settings['show_strongs'] && word.strong_number.present? %>
           <div class="strong-number">
             <span class="inline-block bg-yellow-600 text-yellow-100 text-xs lg:text-sm font-semibold px-2 py-1 rounded-md leading-none">
-              G<%= word.strong_number %>
+              <%= word.display_strong %>
             </span>
           </div>
         <% end %>
 
-        <% if settings['show_grammar'] && word.greek_grammar.present? %>
-          <div class="grammar">
-            <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
-              <%= word.greek_grammar.truncate(10) %>
-            </span>
-          </div>
+        <% if settings['show_grammar'] %>
+          <% if word.greek_grammar.present? %>
+            <div class="grammar">
+              <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+                <%= word.greek_grammar.truncate(10) %>
+              </span>
+            </div>
+          <% elsif word.hebrew_grammar.present? %>
+            <div class="grammar">
+              <span class="inline-block bg-orange-600 text-orange-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+                <%= word.hebrew_grammar.truncate(10) %>
+              </span>
+            </div>
+          <% end %>
         <% end %>
 
         <% if settings['show_pronunciation'] && word.strong&.pronunciation.present? %>
@@ -143,6 +166,12 @@
 
   /* Dynamic font scaling system */
   .greek-word span {
+    font-size: clamp(0.875rem, 3.5vw, 4rem);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  .hebrew-word span {
     font-size: clamp(0.875rem, 3.5vw, 4rem);
     line-height: 1.2;
     font-weight: 500;
@@ -277,7 +306,8 @@
     }
     
     /* Enhanced font sizes for 4K+ viewing distance */
-    .greek-word span {
+    .greek-word span,
+    .hebrew-word span {
       font-size: clamp(2.5rem, 4vw, 5rem);
       font-weight: 600;
     }
@@ -330,7 +360,8 @@
       background-color: #000000;
     }
     
-    .greek-word span {
+    .greek-word span,
+    .hebrew-word span {
       color: #ffffff;
       font-weight: 700;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
@@ -356,6 +387,7 @@
 
   /* Enhanced text handling for all languages */
   .greek-word span,
+  .hebrew-word span,
   .spanish-word span {
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -367,6 +399,7 @@
 
   /* Improved spacing and layout */
   .greek-word,
+  .hebrew-word,
   .spanish-word {
     max-width: 100%;
     overflow: hidden;
