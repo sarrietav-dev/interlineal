@@ -16,6 +16,8 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+  <meta name="turbo-refresh-method" content="morph">
+
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -27,8 +29,10 @@
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       color: white;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       cursor: none;
+      height: 100vh;
     }
     
     .slideshow-container {
@@ -37,31 +41,37 @@
       justify-content: flex-start;
       align-items: center;
       min-height: 100vh;
+      max-height: 100vh;
       padding: 2rem;
       text-align: center;
       position: relative;
       overflow-y: auto;
       overflow-x: hidden;
+      box-sizing: border-box;
     }
     
     .verse-reference {
-      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-size: clamp(2rem, 6vw, 8rem);
       font-weight: 700;
       color: #fbbf24;
-      margin-bottom: 2rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      line-height: 1.2;
+      margin-bottom: clamp(1rem, 3vh, 3rem);
+      text-shadow: clamp(1px, 0.3vw, 4px) clamp(1px, 0.3vw, 4px) clamp(2px, 0.5vw, 8px) rgba(0,0,0,0.7);
+      line-height: 1.1;
       flex-shrink: 0;
+      text-align: center;
+      letter-spacing: clamp(-0.02em, 0.1vw, 0.02em);
     }
     
     .spanish-text {
-      font-size: clamp(1.5rem, 4vw, 3.5rem);
-      line-height: 1.6;
-      max-width: 90vw;
-      margin-bottom: 3rem;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      font-size: clamp(1.25rem, 4vw, 6rem);
+      line-height: clamp(1.4, 1.6, 1.8);
+      max-width: clamp(85vw, 90vw, 95vw);
+      margin-bottom: clamp(2rem, 4vh, 5rem);
+      text-shadow: clamp(1px, 0.2vw, 3px) clamp(1px, 0.2vw, 3px) clamp(1px, 0.3vw, 6px) rgba(0,0,0,0.6);
       font-weight: 400;
       flex-shrink: 0;
+      text-align: center;
+      letter-spacing: clamp(-0.01em, 0.05vw, 0.01em);
     }
     
     .interlinear-container {
@@ -139,31 +149,42 @@
       }
     }
 
-    /* Slideshow-specific interlinear styling */
-    #interlinear-words {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
+    /* Slideshow-specific interlinear styling overrides */
+    .slideshow-container .interlinear-grid {
+      /* Optimize for slideshow viewing - larger gaps and better spacing */
+      gap: clamp(1rem, 3vw, 4rem);
+      max-width: 94vw;
+      margin: 0 auto;
     }
 
-    @media (min-width: 1920px) {
-      #interlinear-words {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-      }
+    .slideshow-container .interlinear-word {
+      /* Enhanced visibility for slideshow mode */
+      border-width: clamp(1px, 0.25vw, 4px);
+      border-color: rgba(75, 85, 99, 0.8);
+      background-color: rgba(55, 65, 81, 0.95);
+      backdrop-filter: blur(2px);
+      
+      /* Better hover states for slideshow */
+      transition: all 0.3s ease;
     }
 
-    @media (max-width: 1200px) {
-      #interlinear-words {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-      }
+    .slideshow-container .interlinear-word:hover {
+      border-color: rgba(59, 130, 246, 0.8);
+      background-color: rgba(59, 130, 246, 0.2);
+      transform: scale(1.02);
     }
 
-    @media (max-width: 768px) {
-      #interlinear-words {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.75rem;
-      }
+    /* Enhanced contrast for slideshow mode */
+    .slideshow-container .greek-word span {
+      color: #dbeafe;
+      font-weight: 600;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+
+    .slideshow-container .spanish-word span {
+      color: #ffffff;
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
     }
 
     /* Improved scrolling for long verses */
@@ -196,6 +217,33 @@
       background: rgba(31, 41, 55, 0.9);
       border-radius: 12px;
       padding: 0.5rem;
+    }
+
+    /* Scroll indicator for long verses */
+    .scroll-indicator {
+      position: fixed;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 30vh;
+      background: rgba(156, 163, 175, 0.3);
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 50;
+    }
+
+    .scroll-indicator.visible {
+      opacity: 1;
+    }
+
+    .scroll-indicator-thumb {
+      width: 100%;
+      background: rgba(59, 130, 246, 0.8);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      min-height: 20%;
     }
   </style>
 </head>
@@ -272,7 +320,12 @@
   
   <!-- Navigation Hint -->
   <div class="navigation-hint" data-slideshow-target="hints">
-    <%= t('slideshow.navigation_hint') %>
+    <%= t('slideshow.navigation_hint') %> • ↑↓ to scroll • ? for help
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" data-slideshow-target="scrollIndicator">
+    <div class="scroll-indicator-thumb" data-slideshow-target="scrollThumb"></div>
   </div>
   
   <!-- All slideshow functionality is now handled by Stimulus controller -->

@@ -66,14 +66,14 @@
   <!-- Main Verse Display -->
   <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
     <!-- Verse Reference -->
-    <h1 class="text-2xl lg:text-4xl xl:text-5xl font-bold text-yellow-400 text-center mb-6 lg:mb-8">
+    <h1 class="responsive-verse-title text-yellow-400 text-center mb-6 lg:mb-8">
       <%= @verse.full_reference %>
     </h1>
 
     <!-- Spanish Text Display -->
     <% if @spanish_text.present? %>
       <div class="bg-gray-700 rounded-lg p-4 lg:p-6 mb-6 lg:mb-8 border-l-4 border-yellow-400">
-        <p class="text-lg lg:text-2xl xl:text-3xl leading-relaxed text-white text-justify">
+        <p class="responsive-spanish-text text-white">
           <%= @spanish_text %>
         </p>
       </div>
