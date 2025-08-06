@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   get "books/:book_id/chapters/:chapter_number", to: "bible#show_chapter", as: :bible_chapter
   get "books/:book_id/chapters/:chapter_number/verses/:verse_number", to: "bible#show_verse", as: :bible_verse
 
+
+
   # Slideshow/Presentation mode
   get "slideshow/:book_id/:chapter_number/:verse_number", to: "bible#slideshow", as: :bible_slideshow
 

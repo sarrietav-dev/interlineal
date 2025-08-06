@@ -12,7 +12,7 @@ class Book < ApplicationRecord
   # Scopes
   scope :new_testament, -> { where(testament: "NT") }
   scope :old_testament, -> { where(testament: "OT") }
-  scope :by_name, -> { order(:name) }
+  scope :by_name, -> { order(:id) }  # Changed from order(:name) to order(:id) for canonical order
 
   # Instance methods
   def full_name
