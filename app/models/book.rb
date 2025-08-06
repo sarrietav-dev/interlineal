@@ -30,4 +30,13 @@ class Book < ApplicationRecord
   def word_count
     words.count
   end
+
+  # Touch associations when book changes to expire caches
+  after_update :touch_chapters
+
+  private
+
+  def touch_chapters
+    chapters.find_each(&:touch)
+  end
 end

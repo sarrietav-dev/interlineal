@@ -76,4 +76,13 @@ class Word < ApplicationRecord
       super
     end
   end
+
+  # Touch parent when word changes to expire caches
+  after_update :touch_verse
+
+  private
+
+  def touch_verse
+    verse.touch
+  end
 end

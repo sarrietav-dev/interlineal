@@ -5,7 +5,11 @@ class BibleController < ApplicationController
 
   # GET /
   def index
-    @books = Book.includes(:chapters).by_name
+    # Cache all books data
+    @books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
+      Book.includes(:chapters).by_name.to_a
+    end
+
     @current_book = @books.first
     @current_chapter = @current_book&.chapters&.first
     @current_verse = @current_chapter&.verses&.first
@@ -33,32 +37,66 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number
   def show_chapter
-    @verses = @chapter.verses.by_number.includes(words: :strong)
+    # Cache verse data for chapter
+    @verses = Rails.cache.fetch("chapter_verses_#{@chapter.id}", expires_in: 6.hours) do
+      @chapter.verses.by_number.includes(words: :strong).to_a
+    end
+
     @current_verse = @verses.first
     @verse_count = @verses.count
 
     # Pagination for verses
     @page_size = params[:page_size]&.to_i || 10
     @page = params[:page]&.to_i || 1
-    @paginated_verses = @verses.limit(@page_size).offset((@page - 1) * @page_size)
+    @paginated_verses = @verses.slice((@page - 1) * @page_size, @page_size)
 
-    # Navigation data
-    @prev_chapter = @chapter.previous_chapter
-    @next_chapter = @chapter.next_chapter
-    @all_books = Book.by_name.includes(:chapters)
+    # Cache navigation data
+    @prev_chapter = Rails.cache.fetch("prev_chapter_#{@chapter.id}", expires_in: 6.hours) do
+      @chapter.previous_chapter
+    end
+
+    @next_chapter = Rails.cache.fetch("next_chapter_#{@chapter.id}", expires_in: 6.hours) do
+      @chapter.next_chapter
+    end
+
+    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
+      Book.by_name.includes(:chapters).to_a
+    end
   end
 
   # GET /books/:book_id/chapters/:chapter_number/verses/:verse_number
   def show_verse
-    @words = @verse.words_with_strongs.by_order
-    @spanish_text = @verse.spanish_text
+    # Cache expensive word loading
+    @words = Rails.cache.fetch("verse_words_#{@verse.id}", expires_in: 1.hour) do
+      @verse.words_with_strongs.by_order.to_a
+    end
 
-    # Navigation data
-    @prev_verse = @verse.previous_verse
-    @next_verse = @verse.next_verse
-    @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
-    @next_chapter = @chapter.next_chapter if @next_verse.nil?
-    @all_books = Book.by_name.includes(:chapters)
+    # Cache Spanish text
+    @spanish_text = Rails.cache.fetch("verse_spanish_#{@verse.id}", expires_in: 6.hours) do
+      @verse.spanish_text
+    end
+
+    # Cache navigation data
+    @prev_verse = Rails.cache.fetch("prev_verse_#{@verse.id}", expires_in: 1.hour) do
+      @verse.previous_verse
+    end
+
+    @next_verse = Rails.cache.fetch("next_verse_#{@verse.id}", expires_in: 1.hour) do
+      @verse.next_verse
+    end
+
+    @prev_chapter = Rails.cache.fetch("prev_chapter_#{@chapter.id}", expires_in: 6.hours) do
+      @chapter.previous_chapter
+    end if @prev_verse.nil?
+
+    @next_chapter = Rails.cache.fetch("next_chapter_#{@chapter.id}", expires_in: 6.hours) do
+      @chapter.next_chapter
+    end if @next_verse.nil?
+
+    # Cache all books data
+    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
+      Book.by_name.includes(:chapters).to_a
+    end
 
     # For slideshow mode
     @slideshow_mode = params[:slideshow] == "true"
@@ -71,8 +109,14 @@ class BibleController < ApplicationController
 
   # GET /slideshow/:book_id/:chapter_number/:verse_number
   def slideshow
-    @words = @verse.words_with_strongs.by_order
-    @spanish_text = @verse.spanish_text
+    # Cache expensive word loading for slideshow
+    @words = Rails.cache.fetch("verse_words_#{@verse.id}", expires_in: 1.hour) do
+      @verse.words_with_strongs.by_order.to_a
+    end
+
+    @spanish_text = Rails.cache.fetch("verse_spanish_#{@verse.id}", expires_in: 6.hours) do
+      @verse.spanish_text
+    end
 
     # Navigation for slideshow
     @prev_verse = @verse.previous_verse

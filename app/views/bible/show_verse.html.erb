@@ -8,31 +8,31 @@
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
         <!-- Book Selector -->
-        <%= select_tag :book_id,
-            options_from_collection_for_select(@all_books, :id, :full_name, @book.id),
-            {
-              class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-              onchange: "window.location.href = '/books/' + this.value + '/chapters/1/verses/1'",
-              "aria-label": "Select Book"
-            } %>
+          <%= select_tag :book_id,
+              options_from_collection_for_select(@all_books, :id, :full_name, @book.id),
+              {
+                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                onchange: "window.location.href = '/books/' + this.value + '/chapters/1/verses/1'",
+                "aria-label": "Select Book"
+              } %>
 
         <!-- Chapter Selector -->
-        <%= select_tag :chapter_number,
-            options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
-            {
-              class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + this.value + '/verses/1'",
-              "aria-label": "Select Chapter"
-            } %>
+          <%= select_tag :chapter_number,
+              options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
+              {
+                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + this.value + '/verses/1'",
+                "aria-label": "Select Chapter"
+              } %>
 
         <!-- Verse Selector -->
-        <%= select_tag :verse_number,
-            options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
-            {
-              class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-20 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + #{@chapter.chapter_number} + '/verses/' + this.value",
-              "aria-label": "Select Verse"
-            } %>
+          <%= select_tag :verse_number,
+              options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
+              {
+                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-20 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + #{@chapter.chapter_number} + '/verses/' + this.value",
+                "aria-label": "Select Verse"
+              } %>
       </div>
 
       <!-- Action Buttons -->
@@ -72,7 +72,9 @@
 
     <!-- Interlinear Display -->
     <div class="interlinear-container" id="interlinear-display">
-      <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
+      <% cache([@verse, @word_display_settings], expires_in: 1.hour) do %>
+        <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
+      <% end %>
     </div>
   </div>
 

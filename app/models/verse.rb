@@ -37,4 +37,18 @@ class Verse < ApplicationRecord
   def words_with_strongs
     words.includes(:strong).order(:word_order)
   end
+
+  # Cache key for fragment caching
+  def cache_key_with_version
+    "#{cache_key}/#{updated_at.to_i}"
+  end
+
+  # Touch parent when verse changes to expire caches
+  after_update :touch_chapter
+
+  private
+
+  def touch_chapter
+    chapter.touch
+  end
 end
