@@ -17,29 +17,22 @@
             } %>
 
         <!-- Chapter Selector -->
-        <%= form_with url: bible_verse_path(@book.id, 1, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
-          <%= hidden_field_tag :book_id, @book.id %>
-          <%= select_tag :chapter_number,
-              options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
-              {
-                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                onchange: "this.form.submit()",
-                "aria-label": "Select Chapter"
-              } %>
-        <% end %>
+        <%= select_tag :chapter_number,
+            options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
+            {
+              class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + this.value + '/verses/1'",
+              "aria-label": "Select Chapter"
+            } %>
 
         <!-- Verse Selector -->
-        <%= form_with url: bible_verse_path(@book.id, @chapter.chapter_number, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
-          <%= hidden_field_tag :book_id, @book.id %>
-          <%= hidden_field_tag :chapter_number, @chapter.chapter_number %>
-          <%= select_tag :verse_number,
-              options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
-              {
-                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-20 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                onchange: "this.form.submit()",
-                "aria-label": "Select Verse"
-              } %>
-        <% end %>
+        <%= select_tag :verse_number,
+            options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
+            {
+              class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-20 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + #{@chapter.chapter_number} + '/verses/' + this.value",
+              "aria-label": "Select Verse"
+            } %>
       </div>
 
       <!-- Action Buttons -->
