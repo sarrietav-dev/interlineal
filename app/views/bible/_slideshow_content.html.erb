@@ -45,6 +45,13 @@
       <button class="control-btn" disabled data-slideshow-nav="prev">◄ <%= t('navigation.previous') %></button>
     <% end %>
     
+    <!-- Navigation Button -->
+    <%= link_to "📖 #{t('bible.navigation')}",
+        navigation_path(book_id: @book.id, chapter_number: @chapter.chapter_number, verse_number: @verse.verse_number),
+        class: "control-btn",
+        title: t('bible.navigation'),
+        data: { turbo_frame: "navigation-modal" } %>
+    
     <button class="control-btn" 
             data-action="click->slideshow#toggleFullscreen" 
             title="<%= t('slideshow.fullscreen') %>">

@@ -1,0 +1,17 @@
+<%= turbo_stream.update "chapter-selector" do %>
+  <div class="space-y-2">
+    <label for="navigation_chapter_number" class="block text-lg font-semibold text-white">
+      <%= t('bible.chapter') %>:
+    </label>
+    <%= form_with url: select_chapter_navigation_path, method: :get, data: { turbo_stream: true } do |chapter_form| %>
+      <%= hidden_field_tag :book_id, @book_id %>
+      <%= chapter_form.select :chapter_number,
+          options_from_collection_for_select(@chapters, :chapter_number, :chapter_number),
+          { id: "navigation_chapter_number" },
+          { 
+            class: "w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+            onchange: "event.target.form.requestSubmit()"
+          } %>
+    <% end %>
+  </div>
+<% end %> 

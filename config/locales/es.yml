@@ -12,12 +12,13 @@ es:
     verses: "Versículos"
     word: "Palabra"
     words: "Palabras"
-    search: "Búsqueda"
+    search: "Buscar"
     slideshow: "Presentación"
     slideshow_mode: "Modo Presentación"
     presentation: "Presentación"
     home: "Inicio"
     back_to_home: "Volver al Inicio"
+    navigation: "Navegación"
     
   navigation:
     previous: "Anterior"
@@ -30,7 +31,9 @@ es:
     view_verse: "Ver Versículo"
     study: "Estudiar"
     navigation: "Navegación"
-    back: "Volver"
+    back: "Atrás"
+    description: "Selecciona un libro, capítulo y versículo para navegar en modo presentación."
+    navigate: "Navegar"
     
   keyboard_shortcuts: "Atajos de teclado"
     

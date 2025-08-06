@@ -18,6 +18,7 @@ en:
     presentation: "Presentation"
     home: "Home"
     back_to_home: "Back to Home"
+    navigation: "Navigation"
 
   navigation:
     previous: "Previous"
@@ -31,6 +32,10 @@ en:
     study: "Study"
     navigation: "Navigation"
     back: "Back"
+    description: "Select a book, chapter, and verse to navigate to in slideshow mode."
+    navigate: "Navigate"
+    select_book_first: "Select a book first"
+    select_chapter_first: "Select a chapter first"
 
   keyboard_shortcuts: "Keyboard shortcuts"
 

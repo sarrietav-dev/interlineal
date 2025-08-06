@@ -1,0 +1,66 @@
+<div id="navigation-form" class="grid grid-cols-1 gap-4 lg:gap-6">
+  <!-- Book Selector -->
+  <div class="space-y-2">
+    <label for="navigation_book_id" class="block text-lg font-semibold text-white">
+      <%= t('bible.book') %>:
+    </label>
+    <%= form_with url: select_book_navigation_path, method: :get, data: { turbo_stream: true } do |book_form| %>
+      <%= book_form.select :book_id,
+          options_from_collection_for_select(@all_books, :id, :full_name, @book_id),
+          { id: "navigation_book_id" },
+          { 
+            class: "w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+            onchange: "event.target.form.requestSubmit()"
+          } %>
+    <% end %>
+  </div>
+
+  <!-- Chapter Selector -->
+  <div id="chapter-selector" class="space-y-2">
+    <label for="navigation_chapter_number" class="block text-lg font-semibold text-white">
+      <%= t('bible.chapter') %>:
+    </label>
+    <% if @chapters.present? %>
+      <%= form_with url: select_chapter_navigation_path, method: :get, data: { turbo_stream: true } do |chapter_form| %>
+        <%= hidden_field_tag :book_id, @book_id %>
+        <%= chapter_form.select :chapter_number,
+            options_from_collection_for_select(@chapters, :chapter_number, :chapter_number, @chapter_number),
+            { id: "navigation_chapter_number" },
+            { 
+              class: "w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              onchange: "event.target.form.requestSubmit()"
+            } %>
+      <% end %>
+    <% else %>
+      <select class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled>
+        <option><%= t('navigation.select_book_first') %></option>
+      </select>
+    <% end %>
+  </div>
+
+  <!-- Verse Selector -->
+  <div id="verse-selector" class="space-y-2">
+    <label for="navigation_verse_number" class="block text-lg font-semibold text-white">
+      <%= t('bible.verse') %>:
+    </label>
+    <% if @verses.present? %>
+      <%= form_with url: navigation_path, method: :patch, data: { turbo: false } do |verse_form| %>
+        <%= hidden_field_tag :book_id, @book_id %>
+        <%= hidden_field_tag :chapter_number, @chapter_number %>
+        <%= verse_form.select :verse_number,
+            options_from_collection_for_select(@verses, :verse_number, :verse_number, @verse_number),
+            { id: "navigation_verse_number" },
+            { class: "w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" } %>
+        
+        <div class="mt-4">
+          <%= verse_form.submit t('navigation.navigate'),
+              class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200" %>
+        </div>
+      <% end %>
+    <% else %>
+      <select class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled>
+        <option><%= t('navigation.select_chapter_first') %></option>
+      </select>
+    <% end %>
+  </div>
+</div> 
