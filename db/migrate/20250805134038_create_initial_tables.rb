@@ -11,8 +11,8 @@ class CreateInitialTables < ActiveRecord::Migration[8.0]
       t.integer :book_id
       t.integer :chapter_number
       t.datetime :created_at, precision: nil, default: -> { "CURRENT_TIMESTAMP" }
-      t.index [:book_id, :chapter_number], unique: true, name: "idx_chapters_book_chapter"
-      t.index [:book_id], name: "idx_chapters_book"
+      t.index [ :book_id, :chapter_number ], unique: true, name: "idx_chapters_book_chapter"
+      t.index [ :book_id ], name: "idx_chapters_book"
     end
 
     create_table :strongs do |t|
@@ -39,8 +39,8 @@ class CreateInitialTables < ActiveRecord::Migration[8.0]
       t.integer :verse_number
       t.text :spanish_text
       t.datetime :created_at, precision: nil, default: -> { "CURRENT_TIMESTAMP" }
-      t.index [:chapter_id, :verse_number], unique: true, name: "idx_verses_chapter_verse"
-      t.index [:chapter_id], name: "idx_verses_chapter"
+      t.index [ :chapter_id, :verse_number ], unique: true, name: "idx_verses_chapter_verse"
+      t.index [ :chapter_id ], name: "idx_verses_chapter"
       t.index :spanish_text, name: "idx_verses_spanish_text"
     end
 
@@ -55,8 +55,8 @@ class CreateInitialTables < ActiveRecord::Migration[8.0]
       t.text :spanish_translation
       t.text :language
       t.datetime :created_at, precision: nil, default: -> { "CURRENT_TIMESTAMP" }
-      t.index [:verse_id, :word_order], name: "idx_words_verse_order"
-      t.index [:verse_id], name: "idx_words_verse_id"
+      t.index [ :verse_id, :word_order ], name: "idx_words_verse_order"
+      t.index [ :verse_id ], name: "idx_words_verse_id"
       t.index :strong_number, name: "idx_words_strong"
       t.index :greek_word, name: "idx_words_greek_word"
       t.index :hebrew_word, name: "idx_words_hebrew_word"
