@@ -202,6 +202,24 @@
       border-radius: clamp(8px, 1vw, 16px);
     }
 
+    .slideshow-container .hebrew-word span,
+    .slideshow-container .hebrew-word a {
+      color: #dbeafe;
+      font-weight: 600;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+      /* Significantly larger Hebrew text for slideshow */
+      font-size: clamp(1.25rem, 3vw, 3rem) !important;
+      line-height: 1.3;
+    }
+
+    .slideshow-container .hebrew-word {
+      /* Increase padding and margins for better bounds */
+      padding: clamp(0.75rem, 2vw, 1.5rem) !important;
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem) !important;
+      min-height: clamp(3rem, 6vh, 5rem);
+      border-radius: clamp(8px, 1vw, 16px);
+    }
+
     .slideshow-container .spanish-word span {
       color: #ffffff;
       font-weight: 500;
