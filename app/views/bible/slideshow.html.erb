@@ -34,7 +34,7 @@
       cursor: none;
       height: 100vh;
     }
-    
+
     .slideshow-container {
       display: flex;
       flex-direction: column;
@@ -49,7 +49,7 @@
       overflow-x: hidden;
       box-sizing: border-box;
     }
-    
+
     .verse-reference {
       font-size: clamp(2rem, 6vw, 8rem);
       font-weight: 700;
@@ -61,7 +61,7 @@
       text-align: center;
       letter-spacing: clamp(-0.02em, 0.1vw, 0.02em);
     }
-    
+
     .spanish-text {
       font-size: clamp(1.25rem, 4vw, 6rem);
       line-height: clamp(1.4, 1.6, 1.8);
@@ -73,14 +73,14 @@
       text-align: center;
       letter-spacing: clamp(-0.01em, 0.05vw, 0.01em);
     }
-    
+
     .interlinear-container {
       width: 100%;
       max-width: 95vw;
       margin-bottom: 2rem;
       flex-shrink: 0;
     }
-    
+
     .controls {
       position: fixed;
       bottom: 2rem;
@@ -93,11 +93,11 @@
       z-index: 100;
       flex-shrink: 0;
     }
-    
+
     .controls.visible {
       opacity: 1;
     }
-    
+
     .control-btn {
       background: rgba(59, 130, 246, 0.9);
       color: white;
@@ -110,18 +110,18 @@
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
-    
+
     .control-btn:hover {
       background: rgba(59, 130, 246, 1);
       transform: translateY(-2px);
     }
-    
+
     .control-btn:disabled {
       background: rgba(107, 114, 128, 0.5);
       cursor: not-allowed;
       transform: none;
     }
-    
+
     .navigation-hint {
       position: fixed;
       top: 2rem;
@@ -131,18 +131,18 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    
+
     .navigation-hint.visible {
       opacity: 1;
     }
-    
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .slideshow-container {
         padding: 1rem;
       }
     }
-    
+
     @media (min-width: 1920px) {
       .slideshow-container {
         padding: 3rem;
@@ -163,16 +163,16 @@
       border-color: rgba(75, 85, 99, 0.8);
       background-color: rgba(55, 65, 81, 0.95);
       backdrop-filter: blur(2px);
-      
+
       /* Better hover states for slideshow */
       transition: all 0.3s ease;
-      
+
       /* Improved sizing and spacing for slideshow */
       padding: clamp(0.75rem, 2vw, 1.5rem);
       margin: clamp(0.5rem, 1vw, 1rem);
       min-width: clamp(8rem, 15vw, 12rem);
       min-height: clamp(6rem, 12vh, 8rem);
-      
+
       /* Better visual separation */
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
@@ -296,10 +296,10 @@
     }
   </style>
 </head>
-  <body data-controller="slideshow" 
+  <body data-controller="slideshow"
         data-action="mousemove->slideshow#mousemove keydown@document->slideshow#keydown">
   <%= render 'slideshow_content' %>
-  
+
   <!-- Navigation Hint -->
   <div class="navigation-hint" data-slideshow-target="hints">
     <%= t('slideshow.navigation_hint') %> • ↑↓ to scroll • ? for help
@@ -312,10 +312,10 @@
 
   <!-- Strong's Definition Modal Frame -->
   <%= turbo_frame_tag "strong-definition-modal" %>
-  
+
   <!-- Navigation Modal Frame -->
   <%= turbo_frame_tag "navigation-modal" %>
-  
+
   <!-- All slideshow functionality is now handled by Stimulus controller -->
 </body>
 </html>

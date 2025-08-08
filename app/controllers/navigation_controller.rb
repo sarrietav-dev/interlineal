@@ -1,5 +1,5 @@
 class NavigationController < ApplicationController
-  before_action :load_navigation_data
+  before_action :load_navigation_data, except: [ :close ]
 
   def show
   end
@@ -18,13 +18,15 @@ class NavigationController < ApplicationController
 
   def select_book
     @book_id = params[:book_id]
-    @book = Book.find(@book_id)
+    @book = Book.find_by(id: @book_id)
+    if @book.nil?
+      @book = Book.first
+    end
     @chapters = @book.chapters.by_number
 
-    # Load all books for the form
-    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
-      Book.by_name.includes(:chapters).to_a
-    end
+    @chapter = @book.chapters.find_by(chapter_number: 1)
+    @chapter_number = @chapter.chapter_number if @chapter
+    @verses = @chapter&.verses&.by_number || []
 
     respond_to do |format|
       format.turbo_stream
@@ -34,15 +36,13 @@ class NavigationController < ApplicationController
   def select_chapter
     @book_id = params[:book_id]
     @chapter_number = params[:chapter_number]
-    @book = Book.find(@book_id)
+    @book = Book.find_by(id: @book_id)
+    if @book.nil?
+      @book = Book.first
+    end
     @chapter = @book.chapters.find_by(chapter_number: @chapter_number)
     @verses = @chapter&.verses&.by_number || []
     @chapters = @book.chapters.by_number
-
-    # Load all books for the form
-    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
-      Book.by_name.includes(:chapters).to_a
-    end
 
     respond_to do |format|
       format.turbo_stream
@@ -66,7 +66,10 @@ class NavigationController < ApplicationController
     end
 
     if @book_id.present?
-      @book = Book.find(@book_id)
+      @book = Book.find_by(id: @book_id)
+      if @book.nil?
+        @book = Book.first
+      end
       @chapters = @book.chapters.by_number
 
       if @chapter_number.present?
