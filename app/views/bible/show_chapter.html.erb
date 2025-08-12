@@ -47,7 +47,7 @@
         <%= form_with url: bible_chapter_path(@book.id, 1), method: :get, local: true, class: "flex items-center gap-2" do |f| %>
           <%= hidden_field_tag :book_id, @book.id %>
           <%= select_tag :chapter_number,
-              options_from_collection_for_select(@all_books.find(@book.id).chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
+              options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
               {
                 class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
                 onchange: "this.form.submit()",

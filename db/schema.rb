@@ -10,18 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_134142) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
   create_table "books", force: :cascade do |t|
     t.text "name", null: false
     t.text "abbreviation"
     t.text "testament"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
   end
 
   create_table "chapters", force: :cascade do |t|
     t.integer "book_id"
     t.integer "chapter_number"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
   end
 
   create_table "strongs", force: :cascade do |t|
@@ -37,6 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_134142) do
     t.text "rv1909_word_count"
     t.text "language"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
     t.index ["language"], name: "idx_strongs_language"
   end
 
@@ -45,6 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_134142) do
     t.integer "verse_number"
     t.text "spanish_text"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
   end
 
   create_table "words", force: :cascade do |t|
@@ -58,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_134142) do
     t.text "spanish_translation"
     t.text "language"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
     t.index ["hebrew_word"], name: "idx_words_hebrew_word"
     t.index ["language"], name: "idx_words_language"
   end

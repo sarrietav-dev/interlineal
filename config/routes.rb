@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   # Slideshow/Presentation mode
   get "slideshow/:book_id/:chapter_number/:verse_number", to: "bible#slideshow", as: :bible_slideshow
+  get "books/:book_id/chapters/:chapter_number/verses/:verse_number/slideshow", to: "bible#slideshow", as: :bible_verse_slideshow
 
   # Interlinear text partial (for AJAX loading)
   get "books/:book_id/chapters/:chapter_number/verses/:verse_number/interlinear", to: "bible#interlinear", as: :bible_interlinear

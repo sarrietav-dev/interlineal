@@ -50,6 +50,11 @@
             settings_path(verse_id: @verse.id),
             data: { turbo_frame: "settings-modal" },
             class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
+
+        <%= link_to "📖 #{t('bible.navigation')}",
+            navigation_path,
+            data: { turbo_frame: "navigation-modal" },
+            class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
       </div>
     </div>
   </nav>
@@ -142,3 +147,6 @@
 
 <!-- Settings Modal Frame -->
 <%= turbo_frame_tag "settings-modal" %>
+
+<!-- Navigation Modal Frame -->
+<%= turbo_frame_tag "navigation-modal" %>

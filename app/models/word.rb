@@ -38,7 +38,7 @@ class Word < ApplicationRecord
 
   def display_strong
     if strong_number.present?
-      if hebrew_word.present?
+      if language == "hebrew"
         "H#{strong_number}"
       else
         "G#{strong_number}"

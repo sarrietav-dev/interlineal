@@ -95,7 +95,7 @@ class BibleController < ApplicationController
 
     # Cache all books data
     @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
-      Book.by_name.includes(:chapters).to_a
+      Book.by_name.includes(:chapters).all
     end
 
     # For slideshow mode
@@ -122,7 +122,7 @@ class BibleController < ApplicationController
     @prev_verse = @verse.previous_verse
     @next_verse = @verse.next_verse
     @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
-    @next_chapter = @chapter.next_chapter if @prev_verse.nil?
+    @next_chapter = @chapter.next_chapter if @next_verse.nil?
 
     # Load word display settings
     @word_display_settings = load_word_display_settings

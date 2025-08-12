@@ -62,7 +62,7 @@ class NavigationController < ApplicationController
 
     # Cache all books data for selectors
     @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
-      Book.by_name.includes(:chapters).to_a
+      Book.by_name.includes(:chapters).all
     end
 
     if @book_id.present?
