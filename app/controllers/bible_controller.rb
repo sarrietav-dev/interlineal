@@ -101,8 +101,9 @@ class BibleController < ApplicationController
     # For slideshow mode
     @slideshow_mode = params[:slideshow] == "true"
 
-    # Load word display settings
-    @word_display_settings = load_word_display_settings
+    # Load interlinear configuration
+    @interlinear_config = InterlinearConfig.for_session_or_default(session.id)
+    @word_display_settings = @interlinear_config.complete_settings_hash
 
     # Using Hotwire - no JSON API needed
   end
@@ -124,8 +125,9 @@ class BibleController < ApplicationController
     @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
     @next_chapter = @chapter.next_chapter if @next_verse.nil?
 
-    # Load word display settings
-    @word_display_settings = load_word_display_settings
+    # Load interlinear configuration
+    @interlinear_config = InterlinearConfig.for_session_or_default(session.id)
+    @word_display_settings = @interlinear_config.complete_settings_hash
 
     if turbo_frame_request?
       render partial: "slideshow_content", layout: false
@@ -213,20 +215,18 @@ class BibleController < ApplicationController
   end
 
   def load_word_display_settings
-    default_settings = {
-      "show_greek" => true,
-      "show_hebrew" => true,
-      "show_spanish" => true,
-      "show_strongs" => true,
-      "show_grammar" => true,
-      "show_pronunciation" => false,
-      "show_word_order" => false
-    }
-
+    # Legacy method for backwards compatibility
+    # Migrate session settings to InterlinearConfig if they exist
     if session[:word_display_settings].is_a?(Hash)
-      default_settings.merge(session[:word_display_settings])
+      config = InterlinearConfig.for_session_or_default(session.id)
+      config.update!(session[:word_display_settings].slice(
+        "show_greek", "show_hebrew", "show_spanish", "show_strongs",
+        "show_grammar", "show_pronunciation", "show_word_order"
+      ))
+      session.delete(:word_display_settings) # Clean up legacy session data
+      config.complete_settings_hash
     else
-      default_settings
+      InterlinearConfig.for_session_or_default(session.id).complete_settings_hash
     end
   end
 end

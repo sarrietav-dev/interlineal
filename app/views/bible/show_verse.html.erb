@@ -77,8 +77,8 @@
 
     <!-- Interlinear Display -->
     <div class="interlinear-container" id="interlinear-display">
-      <% cache([@verse, @word_display_settings], expires_in: 1.hour) do %>
-        <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
+      <% cache([@verse, @interlinear_config], expires_in: 1.hour) do %>
+        <%= render 'interlinear_words', words: @words, settings: @word_display_settings, config: @interlinear_config %>
       <% end %>
     </div>
   </div>

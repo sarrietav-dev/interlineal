@@ -15,7 +15,7 @@
     <!-- Interlinear Display -->
     <% if @words.present? %>
       <div class="interlinear-container">
-        <%= render 'interlinear_words', words: @words, settings: @word_display_settings %>
+        <%= render 'interlinear_words', words: @words, settings: @word_display_settings, config: @interlinear_config %>
       </div>
     <% end %>
   </div>

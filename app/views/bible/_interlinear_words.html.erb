@@ -1,19 +1,27 @@
 <!-- Interlinear Words Display - Advanced Responsive System for Mobile to 4K -->
-<div id="interlinear-words" class="interlinear-grid mt-6 lg:mt-8">
-  <%
-    # Use passed settings or fallback to defaults
-    settings ||= {
-      'show_greek' => true,
-      'show_hebrew' => true,
-      'show_spanish' => true,
-      'show_strongs' => true,
-      'show_grammar' => true,
-      'show_pronunciation' => false,
-      'show_word_order' => false
-    }
-  %>
+<%
+  # Use passed config or create default for backwards compatibility
+  config ||= InterlinearConfig.new(
+    show_greek: settings&.fetch('show_greek', true) || true,
+    show_hebrew: settings&.fetch('show_hebrew', true) || true,
+    show_spanish: settings&.fetch('show_spanish', true) || true,
+    show_strongs: settings&.fetch('show_strongs', true) || true,
+    show_grammar: settings&.fetch('show_grammar', true) || true,
+    show_pronunciation: settings&.fetch('show_pronunciation', false) || false,
+    show_word_order: settings&.fetch('show_word_order', false) || false
+  )
+  
+  # Use config settings or fallback to legacy settings
+  settings ||= config.complete_settings_hash
+%>
+
+<div id="interlinear-words" 
+     class="interlinear-grid mt-6 lg:mt-8"
+     style="gap: <%= config.card_spacing * 0.01 %>rem; --card-padding-multiplier: <%= config.card_padding * 0.01 %>;"
+     data-theme="<%= config.card_theme %>">
   <% words.each_with_index do |word, word_index| %>
-    <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg p-3 lg:p-4 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400 min-h-[120px] flex flex-col justify-between"
+    <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400 min-h-[120px] flex flex-col justify-between"
+         style="padding: calc(var(--card-padding-multiplier, 1) * 0.75rem);"
          <% if word.strong_number.present? %>
            title="<%= t('tv.strongs_help') %>"
            tabindex="0"
@@ -21,60 +29,34 @@
            title="<%= t('messages.no_data') %>"
          <% end %>>
 
-      <!-- Greek Word -->
-      <% if settings['show_greek'] && word.greek_word.present? %>
-        <div class="greek-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
-          <% if word.strong_number.present? %>
-            <%= link_to strong_definition_path(word.strong_number),
-                class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200 break-words hyphens-auto",
-                data: { turbo_frame: "strong-definition-modal" },
-                title: "Ver definición Strong's" do %>
-              <%= word.greek_word %>
+      <!-- Main language elements arranged according to config -->
+      <div class="main-elements space-y-2 flex-1">
+        <% config.arranged_word_elements(word).each do |element| %>
+          <div class="<%= element[:type] %>-word flex items-center justify-center">
+            <% if element[:type] != 'spanish' && word.strong_number.present? %>
+              <%= link_to strong_definition_path(word.strong_number),
+                  class: "block font-medium #{element[:color_class]} leading-tight hover:opacity-80 transition-colors duration-200 break-words hyphens-auto",
+                  style: "font-size: #{element[:font_size]}%; line-height: 1.2;",
+                  data: { turbo_frame: "strong-definition-modal" },
+                  title: "Ver definición Strong's" do %>
+                <%= element[:text] %>
+              <% end %>
+            <% else %>
+              <span class="block font-medium <%= element[:color_class] %> leading-tight break-words hyphens-auto"
+                    style="font-size: <%= element[:font_size] %>%; line-height: 1.2;">
+                <%= element[:text] %>
+              </span>
             <% end %>
-          <% else %>
-            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight break-words hyphens-auto">
-              <%= word.greek_word %>
-            </span>
-          <% end %>
-        </div>
-      <% end %>
-
-      <!-- Hebrew Word -->
-      <% if settings['show_hebrew'] && word.hebrew_word.present? %>
-        <div class="hebrew-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
-          <% if word.strong_number.present? %>
-            <%= link_to strong_definition_path(word.strong_number),
-                class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-orange-300 leading-tight hover:text-orange-200 transition-colors duration-200 break-words hyphens-auto",
-                data: { turbo_frame: "strong-definition-modal" },
-                title: "Ver definición Strong's" do %>
-              <%= word.hebrew_word %>
-            <% end %>
-          <% else %>
-            <span class="block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-orange-300 leading-tight break-words hyphens-auto">
-              <%= word.hebrew_word %>
-            </span>
-          <% end %>
-        </div>
-      <% end %>
-
-      <!-- Spanish Translation -->
-      <% if settings['show_spanish'] %>
-        <div class="spanish-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
-          <% if word.spanish_translation.present? %>
-            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-white leading-tight break-words hyphens-auto">
-              <%= word.spanish_translation %>
-            </span>
-          <% else %>
-            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-gray-400 leading-tight">—</span>
-          <% end %>
-        </div>
-      <% end %>
+          </div>
+        <% end %>
+      </div>
 
       <!-- Strong's Number and Grammar -->
       <div class="metadata space-y-1 mt-auto">
         <% if settings['show_strongs'] && word.strong_number.present? %>
           <div class="strong-number">
-            <span class="inline-block bg-yellow-600 text-yellow-100 text-xs lg:text-sm font-semibold px-2 py-1 rounded-md leading-none">
+            <span class="inline-block bg-yellow-600 text-yellow-100 font-semibold px-2 py-1 rounded-md leading-none"
+                  style="font-size: <%= config.strongs_font_size %>%;">
               <%= word.display_strong %>
             </span>
           </div>
@@ -83,13 +65,15 @@
         <% if settings['show_grammar'] %>
           <% if word.greek_grammar.present? %>
             <div class="grammar">
-              <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              <span class="inline-block bg-gray-600 text-gray-200 font-normal px-2 py-1 rounded-md leading-none"
+                    style="font-size: <%= config.grammar_font_size %>%;">
                 <%= word.greek_grammar.truncate(10) %>
               </span>
             </div>
           <% elsif word.hebrew_grammar.present? %>
             <div class="grammar">
-              <span class="inline-block bg-orange-600 text-orange-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              <span class="inline-block bg-orange-600 text-orange-100 font-normal px-2 py-1 rounded-md leading-none"
+                    style="font-size: <%= config.grammar_font_size %>%;">
                 <%= word.hebrew_grammar.truncate(10) %>
               </span>
             </div>
@@ -98,7 +82,8 @@
 
         <% if settings['show_pronunciation'] && word.strong&.pronunciation.present? %>
           <div class="pronunciation">
-            <span class="inline-block bg-purple-600 text-purple-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+            <span class="inline-block bg-purple-600 text-purple-100 font-normal px-2 py-1 rounded-md leading-none"
+                  style="font-size: <%= config.pronunciation_font_size %>%;">
               /<%= word.strong.pronunciation %>/
             </span>
           </div>
@@ -107,8 +92,8 @@
 
       <!-- Word Order -->
       <% if settings['show_word_order'] %>
-        <div class="word-order mt-2 lg:mt-3">
-          <span class="text-xs text-gray-500 font-mono">
+        <div class="word-order mt-2">
+          <span class="text-gray-500 font-mono" style="font-size: 80%;">
             #<%= word.word_order %>
           </span>
         </div>
@@ -142,6 +127,23 @@
     justify-content: center;
     max-width: 100%;
     margin: 0 auto;
+  }
+
+  /* Theme variations */
+  .interlinear-grid[data-theme="compact"] {
+    gap: clamp(0.25rem, 1vw, 1.5rem);
+  }
+
+  .interlinear-grid[data-theme="compact"] .interlinear-word {
+    min-height: clamp(80px, 10vh, 160px);
+  }
+
+  .interlinear-grid[data-theme="spacious"] {
+    gap: clamp(1rem, 3vw, 4rem);
+  }
+
+  .interlinear-grid[data-theme="spacious"] .interlinear-word {
+    min-height: clamp(140px, 15vh, 240px);
   }
 
   /* Base interlinear word styling with viewport-relative sizing */

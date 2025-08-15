@@ -1,184 +1,370 @@
 <%= form_with url: settings_path, method: :patch,
-    data: {
-      turbo_stream: true
-    },
+    data: { turbo_stream: true },
     id: "settings-form",
-    class: "space-y-4 lg:space-y-6" do |form| %>
+    class: "space-y-6 pb-4" do |form| %>
 
   <%= form.hidden_field :verse_id,
-                    value:
-                      params[:verse_id] ||
-                        (request.referer&.match(%r{verses/(\d+)}) && $1) %>
+                    value: params[:verse_id] ||
+                          (request.referer&.match(%r{verses/(\d+)}) && $1) %>
 
-  <div id="settings-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
-    <!-- Greek Word -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_greek,
-                     {
-                       checked: (settings || @settings)["show_greek"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+  <!-- Display Elements Section -->
+  <div class="bg-gray-700 rounded-lg p-4">
+    <h3 class="text-lg font-semibold text-yellow-400 mb-4">📖 Display Elements</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Greek Word -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_greek,
+                       {
+                         checked: config.show_greek,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-sky-300">Greek Text</span>
+          <p class="text-sm text-gray-400">Show original Greek words</p>
+        </div>
+      </label>
+
+      <!-- Hebrew Word -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_hebrew,
+                       {
+                         checked: config.show_hebrew,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-orange-300">Hebrew Text</span>
+          <p class="text-sm text-gray-400">Show original Hebrew words</p>
+        </div>
+      </label>
+
+      <!-- Spanish Translation -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_spanish,
+                       {
+                         checked: config.show_spanish,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-white">Spanish Translation</span>
+          <p class="text-sm text-gray-400">Show Spanish translations</p>
+        </div>
+      </label>
+
+      <!-- Strong's Numbers -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_strongs,
+                       {
+                         checked: config.show_strongs,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-yellow-400">Strong's Numbers</span>
+          <p class="text-sm text-gray-400">Show Strong's concordance numbers</p>
+        </div>
+      </label>
+
+      <!-- Grammar Information -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_grammar,
+                       {
+                         checked: config.show_grammar,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-gray-300">Grammar</span>
+          <p class="text-sm text-gray-400">Show grammatical information</p>
+        </div>
+      </label>
+
+      <!-- Pronunciation -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_pronunciation,
+                       {
+                         checked: config.show_pronunciation,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-purple-300">Pronunciation</span>
+          <p class="text-sm text-gray-400">Show phonetic pronunciation</p>
+        </div>
+      </label>
+
+      <!-- Word Order -->
+      <label class="flex items-center space-x-3 p-3 bg-gray-600 rounded-lg border border-gray-500 hover:border-blue-400 transition-colors cursor-pointer">
+        <%= form.check_box :show_word_order,
+                       {
+                         checked: config.show_word_order,
+                         class: "w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500"
+                       },
+                       "true", "false" %>
+        <div>
+          <span class="text-base font-semibold text-gray-400">Word Order</span>
+          <p class="text-sm text-gray-400">Show word sequence numbers</p>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Layout Configuration Section -->
+  <div class="bg-gray-700 rounded-lg p-4">
+    <h3 class="text-lg font-semibold text-yellow-400 mb-4">🎨 Layout Configuration</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Primary Language -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-sky-300">
-          <%= t("settings.show_greek") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_greek_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Primary Language</label>
+        <%= form.select :primary_language,
+                       options_for_select([
+                         ['Spanish', 'spanish'],
+                         ['Greek', 'greek'],
+                         ['Hebrew', 'hebrew']
+                       ], config.primary_language),
+                       {},
+                       {
+                         class: "w-full bg-gray-600 border border-gray-500 text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
+                       } %>
+        <p class="text-xs text-gray-400 mt-1">Language displayed most prominently</p>
       </div>
-    </label>
-    <!-- Hebrew Word -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_hebrew,
-                     {
-                       checked: (settings || @settings)["show_hebrew"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+
+      <!-- Secondary Language -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-orange-300">
-          <%= t("settings.show_hebrew") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_hebrew_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Secondary Language</label>
+        <%= form.select :secondary_language,
+                       options_for_select([
+                         ['Greek', 'greek'],
+                         ['Hebrew', 'hebrew'],
+                         ['Spanish', 'spanish']
+                       ], config.secondary_language),
+                       {},
+                       {
+                         class: "w-full bg-gray-600 border border-gray-500 text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
+                       } %>
+        <p class="text-xs text-gray-400 mt-1">Language displayed second</p>
       </div>
-    </label>
-    <!-- Spanish Translation -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_spanish,
-                     {
-                       checked: (settings || @settings)["show_spanish"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+
+      <!-- Element Order -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Element Arrangement</label>
+        <%= form.select :element_order,
+                       options_for_select([
+                         ['Primary → Secondary → Spanish', 1],
+                         ['Spanish → Primary → Secondary', 2],
+                         ['Primary → Spanish → Secondary', 3],
+                         ['Secondary → Primary → Spanish', 4],
+                         ['Spanish → Secondary → Primary', 5],
+                         ['Secondary → Spanish → Primary', 6]
+                       ], config.element_order),
+                       {},
+                       {
+                         class: "w-full bg-gray-600 border border-gray-500 text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
+                       } %>
+        <p class="text-xs text-gray-400 mt-1">Order in which language elements appear in each card</p>
+      </div>
+
+      <!-- Card Theme -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-white">
-          <%= t("settings.show_spanish") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_spanish_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Card Theme</label>
+        <%= form.select :card_theme,
+                       options_for_select([
+                         ['Default', 'default'],
+                         ['Compact', 'compact'],
+                         ['Spacious', 'spacious']
+                       ], config.card_theme),
+                       {},
+                       {
+                         class: "w-full bg-gray-600 border border-gray-500 text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
+                       } %>
+        <p class="text-xs text-gray-400 mt-1">Overall spacing and layout style</p>
       </div>
-    </label>
-    <!-- Strong's Numbers -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_strongs,
-                     {
-                       checked: (settings || @settings)["show_strongs"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+    </div>
+  </div>
+
+  <!-- Font Sizes Section -->
+  <div class="bg-gray-700 rounded-lg p-4">
+    <h3 class="text-lg font-semibold text-yellow-400 mb-4">📏 Font Sizes</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Greek Font Size -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-yellow-400">
-          <%= t("settings.show_strongs") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_strongs_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-sky-300 mb-2">Greek Text Size</label>
+        <%= form.range_field :greek_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.greek_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "greek-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="greek-font-display"><%= config.greek_font_size %>%</span>
+          <span>200%</span>
+        </div>
       </div>
-    </label>
-    <!-- Grammar Information -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_grammar,
-                     {
-                       checked: (settings || @settings)["show_grammar"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+
+      <!-- Hebrew Font Size -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-gray-300">
-          <%= t("settings.show_grammar") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_grammar_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-orange-300 mb-2">Hebrew Text Size</label>
+        <%= form.range_field :hebrew_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.hebrew_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "hebrew-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="hebrew-font-display"><%= config.hebrew_font_size %>%</span>
+          <span>200%</span>
+        </div>
       </div>
-    </label>
-    <!-- Pronunciation -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_pronunciation,
-                     {
-                       checked: (settings || @settings)["show_pronunciation"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+
+      <!-- Spanish Font Size -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-purple-300">
-          <%= t("settings.show_pronunciation") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_pronunciation_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-white mb-2">Spanish Text Size</label>
+        <%= form.range_field :spanish_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.spanish_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "spanish-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="spanish-font-display"><%= config.spanish_font_size %>%</span>
+          <span>200%</span>
+        </div>
       </div>
-    </label>
-    <!-- Word Order -->
-    <label
-      class="
-        flex items-center space-x-3 p-3 lg:p-4 bg-gray-700 rounded-lg border
-        border-gray-600 hover:border-blue-400 transition-colors cursor-pointer
-      "
-    >
-      <%= form.check_box :show_word_order,
-                     {
-                       checked: (settings || @settings)["show_word_order"],
-                       class:
-                         "w-5 h-5 lg:w-6 lg:h-6 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500",
-                     },
-                     "true",
-                     "false" %>
+
+      <!-- Strong's Font Size -->
       <div>
-        <span class="text-base lg:text-lg font-semibold text-gray-400">
-          <%= t("settings.show_word_order") %>
-        </span>
-        <p class="text-sm lg:text-base text-gray-400">
-          <%= t("settings.show_word_order_desc") %>
-        </p>
+        <label class="block text-sm font-medium text-yellow-400 mb-2">Strong's Numbers Size</label>
+        <%= form.range_field :strongs_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.strongs_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "strongs-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="strongs-font-display"><%= config.strongs_font_size %>%</span>
+          <span>200%</span>
+        </div>
       </div>
-    </label>
+
+      <!-- Grammar Font Size -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Grammar Info Size</label>
+        <%= form.range_field :grammar_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.grammar_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "grammar-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="grammar-font-display"><%= config.grammar_font_size %>%</span>
+          <span>200%</span>
+        </div>
+      </div>
+
+      <!-- Pronunciation Font Size -->
+      <div>
+        <label class="block text-sm font-medium text-purple-300 mb-2">Pronunciation Size</label>
+        <%= form.range_field :pronunciation_font_size,
+                           in: 50..200,
+                           step: 10,
+                           value: config.pronunciation_font_size,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "pronunciation-font-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="pronunciation-font-display"><%= config.pronunciation_font_size %>%</span>
+          <span>200%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Appearance Section -->
+  <div class="bg-gray-700 rounded-lg p-4">
+    <h3 class="text-lg font-semibold text-yellow-400 mb-4">🎯 Card Appearance</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Card Padding -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Card Padding</label>
+        <%= form.range_field :card_padding,
+                           in: 50..150,
+                           step: 10,
+                           value: config.card_padding,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "padding-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="padding-display"><%= config.card_padding %>%</span>
+          <span>150%</span>
+        </div>
+      </div>
+
+      <!-- Card Spacing -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Card Spacing</label>
+        <%= form.range_field :card_spacing,
+                           in: 50..150,
+                           step: 10,
+                           value: config.card_spacing,
+                           class: "w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider",
+                           data: { 
+                             target: "spacing-display",
+                             action: "input->range#updateDisplay"
+                           } %>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>50%</span>
+          <span id="spacing-display"><%= config.card_spacing %>%</span>
+          <span>150%</span>
+        </div>
+      </div>
+    </div>
   </div>
 
 <% end %>
+
+<script>
+  // Simple range slider display updates
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+      slider.addEventListener('input', function() {
+        const targetId = this.dataset.target;
+        const display = document.getElementById(targetId);
+        if (display) {
+          display.textContent = this.value + '%';
+        }
+      });
+    });
+  });
+</script>

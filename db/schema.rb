@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_15_192346) do
   create_table "books", force: :cascade do |t|
     t.text "name", null: false
     t.text "abbreviation"
@@ -24,6 +24,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
     t.integer "chapter_number"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
+  end
+
+  create_table "interlinear_configs", force: :cascade do |t|
+    t.boolean "show_greek", default: true
+    t.boolean "show_hebrew", default: true
+    t.boolean "show_spanish", default: true
+    t.boolean "show_strongs", default: true
+    t.boolean "show_grammar", default: true
+    t.boolean "show_pronunciation", default: false
+    t.boolean "show_word_order", default: false
+    t.string "primary_language", default: "spanish"
+    t.string "secondary_language", default: "greek"
+    t.integer "element_order", default: 1
+    t.integer "greek_font_size", default: 100
+    t.integer "hebrew_font_size", default: 100
+    t.integer "spanish_font_size", default: 100
+    t.integer "strongs_font_size", default: 100
+    t.integer "grammar_font_size", default: 100
+    t.integer "pronunciation_font_size", default: 100
+    t.integer "card_padding", default: 100
+    t.integer "card_spacing", default: 100
+    t.string "card_theme", default: "default"
+    t.string "session_id"
+    t.string "name", default: "Default Configuration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_interlinear_configs_on_session_id"
   end
 
   create_table "strongs", force: :cascade do |t|

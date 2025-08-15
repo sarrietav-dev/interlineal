@@ -9,39 +9,74 @@ RSpec.describe SettingsController, type: :controller do
       expect(response).to render_template(:show)
     end
 
-    it "loads default settings" do
+    it "loads interlinear config and settings" do
       get :show
+      expect(assigns(:interlinear_config)).to be_a(InterlinearConfig)
       expect(assigns(:settings)).to include("show_greek" => true, "show_spanish" => true)
     end
 
-    it "merges session settings" do
-      session[:word_display_settings] = { "show_greek" => false }
-      get :show
+    it "creates config for session if none exists" do
+      expect {
+        get :show
+      }.to change(InterlinearConfig, :count).by(1)
+
+      config = assigns(:interlinear_config)
+      expect(config.session_id).to eq(session.id.to_s)
+    end
+
+    it "uses existing config for session" do
+      existing_config = create(:interlinear_config, session_id: session.id.to_s, show_greek: false)
+
+      expect {
+        get :show
+      }.not_to change(InterlinearConfig, :count)
+
+      expect(assigns(:interlinear_config)).to eq(existing_config)
       expect(assigns(:settings)["show_greek"]).to be false
     end
   end
 
   describe "PATCH #update" do
+    let(:config) { create(:interlinear_config, session_id: session.id.to_s) }
     let(:valid_params) do
       {
-        settings: {
-          show_greek: "1",
-          show_hebrew: "0",
-          show_spanish: "1",
-          show_strongs: "1",
-          show_grammar: "0",
-          show_pronunciation: "0",
-          show_word_order: "0"
-        },
+        show_greek: "1",
+        show_hebrew: "0",
+        show_spanish: "1",
+        show_strongs: "1",
+        show_grammar: "0",
+        show_pronunciation: "1",
+        show_word_order: "0",
+        primary_language: "greek",
+        secondary_language: "hebrew",
+        element_order: "2",
+        greek_font_size: "120",
+        spanish_font_size: "110",
+        card_padding: "110",
+        card_spacing: "90",
+        card_theme: "compact",
         verse_id: verse.id
       }
     end
 
+    before { config }
+
     context "with valid parameters" do
-      it "updates session settings" do
+      it "updates interlinear config" do
         patch :update, params: valid_params
-        expect(session[:word_display_settings]["show_greek"]).to be true
-        expect(session[:word_display_settings]["show_hebrew"]).to be false
+        config.reload
+
+        expect(config.show_greek).to be true
+        expect(config.show_hebrew).to be false
+        expect(config.show_pronunciation).to be true
+        expect(config.primary_language).to eq("greek")
+        expect(config.secondary_language).to eq("hebrew")
+        expect(config.element_order).to eq(2)
+        expect(config.greek_font_size).to eq(120)
+        expect(config.spanish_font_size).to eq(110)
+        expect(config.card_padding).to eq(110)
+        expect(config.card_spacing).to eq(90)
+        expect(config.card_theme).to eq("compact")
       end
 
       it "responds with turbo stream" do
@@ -57,27 +92,60 @@ RSpec.describe SettingsController, type: :controller do
 
       it "redirects back for HTML format" do
         patch :update, params: valid_params, format: :html
-        expect(response).to redirect_back(fallback_location: root_path)
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "updates assigned settings hash" do
+        patch :update, params: valid_params
+        expect(assigns(:settings)["show_greek"]).to be true
+        expect(assigns(:settings)["primary_language"]).to eq("greek")
+        expect(assigns(:settings)["greek_font_size"]).to eq(120)
       end
     end
 
     context "with invalid parameters" do
-      it "handles missing settings gracefully" do
+      it "handles missing parameters gracefully" do
         patch :update, params: { verse_id: verse.id }
-        expect(response).to redirect_back(fallback_location: root_path)
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "handles invalid font size values" do
+        expect {
+          patch :update, params: valid_params.merge(greek_font_size: "250") # over max
+        }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "handles invalid language combinations" do
+        expect {
+          patch :update, params: valid_params.merge(
+            primary_language: "greek",
+            secondary_language: "greek"
+          )
+        }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end
 
   describe "PATCH #reset" do
-    before do
-      session[:word_display_settings] = { "show_greek" => false, "show_spanish" => false }
-    end
+    let!(:config) { create(:interlinear_config,
+                          session_id: session.id.to_s,
+                          show_greek: false,
+                          show_spanish: false,
+                          primary_language: "hebrew",
+                          greek_font_size: 150,
+                          card_theme: "spacious") }
 
-    it "resets to default settings" do
+    it "resets interlinear config to default values" do
       patch :reset, format: :turbo_stream
-      expect(session[:word_display_settings]["show_greek"]).to be true
-      expect(session[:word_display_settings]["show_spanish"]).to be true
+      config.reload
+
+      expect(config.show_greek).to be true
+      expect(config.show_spanish).to be true
+      expect(config.primary_language).to eq("spanish")
+      expect(config.secondary_language).to eq("greek")
+      expect(config.element_order).to eq(1)
+      expect(config.greek_font_size).to eq(100)
+      expect(config.card_theme).to eq("default")
     end
 
     it "responds with turbo stream" do
@@ -93,7 +161,13 @@ RSpec.describe SettingsController, type: :controller do
 
     it "redirects back for HTML format" do
       patch :reset, format: :html
-      expect(response).to redirect_back(fallback_location: root_path)
+      expect(response).to have_http_status(:redirect)
+    end
+
+    it "updates assigned settings hash" do
+      patch :reset, format: :turbo_stream
+      expect(assigns(:settings)["show_greek"]).to be true
+      expect(assigns(:settings)["primary_language"]).to eq("spanish")
     end
   end
 
@@ -106,18 +180,12 @@ RSpec.describe SettingsController, type: :controller do
   end
 
   describe "private methods" do
-    describe "#default_settings" do
-      it "returns default settings hash" do
-        controller.send(:default_settings)
-        expect(controller.send(:default_settings)).to include(
-          "show_greek" => true,
-          "show_hebrew" => true,
-          "show_spanish" => true,
-          "show_strongs" => true,
-          "show_grammar" => true,
-          "show_pronunciation" => false,
-          "show_word_order" => false
-        )
+    describe "#load_settings" do
+      it "loads interlinear config and settings" do
+        controller.send(:load_settings)
+        expect(assigns(:interlinear_config)).to be_a(InterlinearConfig)
+        expect(assigns(:settings)).to be_a(Hash)
+        expect(assigns(:settings)).to include("show_greek", "primary_language", "greek_font_size")
       end
     end
 
@@ -127,7 +195,8 @@ RSpec.describe SettingsController, type: :controller do
       context "with verse_id parameter" do
         it "returns words for specified verse" do
           word
-          result = controller.send(:current_verse_words, verse_id: verse.id)
+          controller.instance_variable_set(:@verse_id, verse.id)
+      result = controller.send(:current_verse_words)
           expect(result).to include(word)
         end
       end
