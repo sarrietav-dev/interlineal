@@ -68,11 +68,13 @@
 
     <!-- Spanish Text Display -->
     <% if @spanish_text.present? %>
-      <div class="bg-gray-700 rounded-lg p-4 lg:p-6 mb-6 lg:mb-8 border-l-4 border-yellow-400">
-        <p class="responsive-spanish-text text-white">
-          <%= @spanish_text %>
-        </p>
-      </div>
+      <% cache([@verse, 'spanish_text'], expires_in: 1.hour) do %>
+        <div class="bg-gray-700 rounded-lg p-4 lg:p-6 mb-6 lg:mb-8 border-l-4 border-yellow-400">
+          <p class="responsive-spanish-text text-white">
+            <%= @spanish_text %>
+          </p>
+        </div>
+      <% end %>
     <% end %>
 
     <!-- Interlinear Display -->

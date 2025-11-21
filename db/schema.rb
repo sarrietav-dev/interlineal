@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_145347) do
   create_table "books", force: :cascade do |t|
     t.text "name", null: false
     t.text "abbreviation"
@@ -24,6 +24,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
     t.integer "chapter_number"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
+    t.index ["book_id", "chapter_number"], name: "index_chapters_on_book_id_and_chapter_number"
+    t.index ["book_id"], name: "index_chapters_on_book_id"
   end
 
   create_table "strongs", force: :cascade do |t|
@@ -40,7 +42,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
     t.text "language"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
+    t.index ["definition"], name: "index_strongs_on_definition"
+    t.index ["definition2"], name: "index_strongs_on_definition2"
     t.index ["language"], name: "idx_strongs_language"
+    t.index ["strong_number"], name: "index_strongs_on_strong_number"
   end
 
   create_table "verses", force: :cascade do |t|
@@ -49,6 +54,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
     t.text "spanish_text"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
+    t.index ["chapter_id", "verse_number"], name: "index_verses_on_chapter_id_and_verse_number"
+    t.index ["chapter_id"], name: "index_verses_on_chapter_id"
+    t.index ["spanish_text"], name: "index_verses_on_spanish_text"
   end
 
   create_table "words", force: :cascade do |t|
@@ -63,8 +71,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_191258) do
     t.text "language"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
+    t.index ["greek_word"], name: "index_words_on_greek_word"
     t.index ["hebrew_word"], name: "idx_words_hebrew_word"
     t.index ["language"], name: "idx_words_language"
+    t.index ["spanish_translation"], name: "index_words_on_spanish_translation"
+    t.index ["strong_number"], name: "index_words_on_strong_number"
+    t.index ["verse_id", "word_order"], name: "index_words_on_verse_id_and_word_order"
+    t.index ["verse_id"], name: "index_words_on_verse_id"
   end
 
   add_foreign_key "chapters", "books"

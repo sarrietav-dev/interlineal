@@ -32,4 +32,13 @@ class Chapter < ApplicationRecord
   def previous_chapter
     book.chapters.where("chapter_number < ?", chapter_number).order(:chapter_number).last
   end
+
+  # Touch parent when chapter changes to expire caches
+  after_update :touch_book
+
+  private
+
+  def touch_book
+    book.touch
+  end
 end

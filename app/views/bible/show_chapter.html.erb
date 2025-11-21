@@ -80,7 +80,8 @@
       <!-- Verse Grid - Optimized for TV screens -->
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-4 lg:gap-6">
         <% @verses.each do |verse| %>
-          <div class="bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400 group">
+          <% cache([verse, 'chapter_verse_card'], expires_in: 6.hours) do %>
+            <div class="bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400 group">
             <div class="flex items-start gap-4">
               <!-- Verse Number -->
               <div class="flex-shrink-0">
@@ -130,7 +131,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       </div>
 
@@ -172,49 +173,51 @@
   </div>
 
   <!-- Chapter Statistics -->
-  <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
-    <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-4 lg:mb-6">
-      📊 Estadísticas del Capítulo
-    </h3>
+  <% cache([@chapter, 'chapter_stats'], expires_in: 6.hours) do %>
+    <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
+      <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-4 lg:mb-6">
+        📊 Estadísticas del Capítulo
+      </h3>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-      <div class="text-center">
-        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
-          <%= @verse_count %>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="text-center">
+          <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+            <%= @verse_count %>
+          </div>
+          <div class="text-sm lg:text-base text-gray-400">
+            <%= @verse_count == 1 ? 'Versículo' : 'Versículos' %>
+          </div>
         </div>
-        <div class="text-sm lg:text-base text-gray-400">
-          <%= @verse_count == 1 ? 'Versículo' : 'Versículos' %>
-        </div>
-      </div>
 
-      <div class="text-center">
-        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
-          <%= @chapter.word_count %>
+        <div class="text-center">
+          <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+            <%= @chapter.word_count %>
+          </div>
+          <div class="text-sm lg:text-base text-gray-400">
+            Palabras
+          </div>
         </div>
-        <div class="text-sm lg:text-base text-gray-400">
-          Palabras
-        </div>
-      </div>
 
-      <div class="text-center">
-        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
-          <%= @chapter.words.with_strongs.count %>
+        <div class="text-center">
+          <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+            <%= @chapter.words.with_strongs.count %>
+          </div>
+          <div class="text-sm lg:text-base text-gray-400">
+            Strong's
+          </div>
         </div>
-        <div class="text-sm lg:text-base text-gray-400">
-          Strong's
-        </div>
-      </div>
 
-      <div class="text-center">
-        <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
-          <%= @book.chapter_count %>
-        </div>
-        <div class="text-sm lg:text-base text-gray-400">
-          Capítulos en <%= @book.abbreviation %>
+        <div class="text-center">
+          <div class="text-2xl lg:text-3xl font-bold text-white mb-2">
+            <%= @book.chapter_count %>
+          </div>
+          <div class="text-sm lg:text-base text-gray-400">
+            Capítulos en <%= @book.abbreviation %>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
 <script>

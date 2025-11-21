@@ -26,24 +26,28 @@
             <h3 class="text-xl lg:text-2xl font-semibold text-yellow-400 mb-4">
               📚 Seleccionar Libro
             </h3>
-            <div class="space-y-3">
-              <% @books.first(10).each do |book| %>
-                <a href="<%= bible_book_path(book.id) %>"
-                   class="block bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400">
-                  <div class="flex justify-between items-center">
-                    <span class="text-lg lg:text-xl font-semibold text-white">
-                      <%= book.name %>
-                    </span>
-                    <span class="text-sm lg:text-base text-gray-300">
-                      <%= book.chapter_count %> <%= book.chapter_count == 1 ? 'capítulo' : 'capítulos' %>
-                    </span>
-                  </div>
-                  <span class="text-sm lg:text-base text-gray-400 mt-2 block">
-                    <%= book.abbreviation %> • <%= book.testament == 'NT' ? 'Nuevo Testamento' : 'Antiguo Testamento' %>
-                  </span>
-                </a>
-              <% end %>
-            </div>
+            <% cache('books_list', expires_in: 12.hours) do %>
+              <div class="space-y-3">
+                <% @books.first(10).each do |book| %>
+                  <% cache(book, expires_in: 12.hours) do %>
+                    <a href="<%= bible_book_path(book.id) %>"
+                       class="block bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400">
+                      <div class="flex justify-between items-center">
+                        <span class="text-lg lg:text-xl font-semibold text-white">
+                          <%= book.name %>
+                        </span>
+                        <span class="text-sm lg:text-base text-gray-300">
+                          <%= book.chapter_count %> <%= book.chapter_count == 1 ? 'capítulo' : 'capítulos' %>
+                        </span>
+                      </div>
+                      <span class="text-sm lg:text-base text-gray-400 mt-2 block">
+                        <%= book.abbreviation %> • <%= book.testament == 'NT' ? 'Nuevo Testamento' : 'Antiguo Testamento' %>
+                      </span>
+                    </a>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
           </div>
 
           <!-- Quick Access -->

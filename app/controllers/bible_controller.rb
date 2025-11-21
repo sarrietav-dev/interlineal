@@ -66,36 +66,24 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number/verses/:verse_number
   def show_verse
-    # Cache expensive word loading
-    @words = Rails.cache.fetch("verse_words_#{@verse.id}", expires_in: 1.hour) do
-      @verse.words_with_strongs.by_order.to_a
+    # Fragment caching in views handles the heavy lifting
+    # Just load the data with proper eager loading
+    @words = @verse.words.includes(:strong).order(:word_order).to_a
+    @spanish_text = @verse.spanish_text
+
+    # Navigation data - cache these as they're computed
+    cache_key = ['verse_navigation', @verse.id, @chapter.id]
+    @prev_verse, @next_verse, @prev_chapter, @next_chapter = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
+      prev_v = @verse.previous_verse
+      next_v = @verse.next_verse
+      prev_c = prev_v.nil? ? @chapter.previous_chapter : nil
+      next_c = next_v.nil? ? @chapter.next_chapter : nil
+      [prev_v, next_v, prev_c, next_c]
     end
 
-    # Cache Spanish text
-    @spanish_text = Rails.cache.fetch("verse_spanish_#{@verse.id}", expires_in: 6.hours) do
-      @verse.spanish_text
-    end
-
-    # Cache navigation data
-    @prev_verse = Rails.cache.fetch("prev_verse_#{@verse.id}", expires_in: 1.hour) do
-      @verse.previous_verse
-    end
-
-    @next_verse = Rails.cache.fetch("next_verse_#{@verse.id}", expires_in: 1.hour) do
-      @verse.next_verse
-    end
-
-    @prev_chapter = Rails.cache.fetch("prev_chapter_#{@chapter.id}", expires_in: 6.hours) do
-      @chapter.previous_chapter
-    end if @prev_verse.nil?
-
-    @next_chapter = Rails.cache.fetch("next_chapter_#{@chapter.id}", expires_in: 6.hours) do
-      @chapter.next_chapter
-    end if @next_verse.nil?
-
-    # Cache all books data
-    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 6.hours) do
-      Book.by_name.includes(:chapters).all
+    # Cache all books data for selectors
+    @all_books = Rails.cache.fetch("all_books_with_chapters", expires_in: 12.hours) do
+      Book.by_name.includes(:chapters).to_a
     end
 
     # For slideshow mode
@@ -109,20 +97,19 @@ class BibleController < ApplicationController
 
   # GET /slideshow/:book_id/:chapter_number/:verse_number
   def slideshow
-    # Cache expensive word loading for slideshow
-    @words = Rails.cache.fetch("verse_words_#{@verse.id}", expires_in: 1.hour) do
-      @verse.words_with_strongs.by_order.to_a
-    end
+    # Reuse data loading from show_verse
+    @words = @verse.words.includes(:strong).order(:word_order).to_a
+    @spanish_text = @verse.spanish_text
 
-    @spanish_text = Rails.cache.fetch("verse_spanish_#{@verse.id}", expires_in: 6.hours) do
-      @verse.spanish_text
+    # Reuse cached navigation
+    cache_key = ['verse_navigation', @verse.id, @chapter.id]
+    @prev_verse, @next_verse, @prev_chapter, @next_chapter = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
+      prev_v = @verse.previous_verse
+      next_v = @verse.next_verse
+      prev_c = prev_v.nil? ? @chapter.previous_chapter : nil
+      next_c = next_v.nil? ? @chapter.next_chapter : nil
+      [prev_v, next_v, prev_c, next_c]
     end
-
-    # Navigation for slideshow
-    @prev_verse = @verse.previous_verse
-    @next_verse = @verse.next_verse
-    @prev_chapter = @chapter.previous_chapter if @prev_verse.nil?
-    @next_chapter = @chapter.next_chapter if @next_verse.nil?
 
     # Load word display settings
     @word_display_settings = load_word_display_settings
@@ -147,35 +134,46 @@ class BibleController < ApplicationController
   # GET /search
   def search
     @query = params[:q]&.strip
-    @results = []
 
     if @query.present? && @query.length >= 2
-      # Search in Spanish text
-      spanish_results = Verse.joins(:chapter, :book)
-                            .where("spanish_text LIKE ?", "%#{@query}%")
-                            .includes(:chapter, :book)
-                            .limit(50)
+      # Cache search results for 15 minutes
+      cache_key = ['bible_search', @query, I18n.locale]
+      @results = Rails.cache.fetch(cache_key, expires_in: 15.minutes) do
+        # Use sanitized SQL for LIKE queries to prevent SQL injection
+        sanitized_query = ActiveRecord::Base.sanitize_sql_like(@query)
 
-      # Search in Greek and Hebrew words
-      greek_hebrew_results = Word.joins(verse: { chapter: :book })
-                                .where("greek_word LIKE ? OR hebrew_word LIKE ? OR spanish_translation LIKE ?",
-                                       "%#{@query}%", "%#{@query}%", "%#{@query}%")
-                                .includes(verse: { chapter: :book })
-                                .limit(50)
-                                .map(&:verse)
-                                .uniq
+        # Search in Spanish text with eager loading
+        spanish_results = Verse.joins(chapter: :book)
+                              .where("verses.spanish_text LIKE ?", "%#{sanitized_query}%")
+                              .includes(chapter: :book)
+                              .limit(50)
+                              .to_a
 
-      # Search in Strong's definitions
-      strong_results = Strong.joins(words: { verse: { chapter: :book } })
-                           .where("definition LIKE ? OR definition2 LIKE ?", "%#{@query}%", "%#{@query}%")
-                           .includes(words: { verse: { chapter: :book } })
-                           .limit(50)
-                           .flat_map(&:verses_with_this_word)
-                           .uniq
+        # Search in Greek and Hebrew words
+        greek_hebrew_results = Verse.joins(:words, chapter: :book)
+                                  .where("words.greek_word LIKE ? OR words.hebrew_word LIKE ? OR words.spanish_translation LIKE ?",
+                                         "%#{sanitized_query}%", "%#{sanitized_query}%", "%#{sanitized_query}%")
+                                  .includes(chapter: :book)
+                                  .distinct
+                                  .limit(50)
+                                  .to_a
 
-      @results = (spanish_results + greek_hebrew_results + strong_results).uniq.sort_by do |verse|
-        [ verse.book.name, verse.chapter.chapter_number, verse.verse_number ]
+        # Search in Strong's definitions with optimized query
+        strong_results = Verse.joins(words: :strong, chapter: :book)
+                             .where("strongs.definition LIKE ? OR strongs.definition2 LIKE ?",
+                                    "%#{sanitized_query}%", "%#{sanitized_query}%")
+                             .includes(chapter: :book)
+                             .distinct
+                             .limit(50)
+                             .to_a
+
+        # Combine and sort results
+        (spanish_results + greek_hebrew_results + strong_results)
+                    .uniq(&:id)
+                    .sort_by { |verse| [ verse.book.name, verse.chapter.chapter_number, verse.verse_number ] }
       end
+    else
+      @results = []
     end
 
     @total_results = @results.count
@@ -183,26 +181,36 @@ class BibleController < ApplicationController
 
   # GET /strongs/:strong_number
   def strong_definition
-    @strong = Strong.find_by(strong_number: params[:strong_number])
+    cache_key = ['strong_definition', params[:strong_number], I18n.locale]
 
-    if @strong
-      @verses_with_word = @strong.verses_with_this_word.first(20)
+    @strong, @verses_with_word = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
+      strong = Strong.find_by(strong_number: params[:strong_number])
+      if strong
+        verses = strong.verses_with_this_word.limit(20).to_a
+        [strong, verses]
+      else
+        [nil, []]
+      end
     end
   end
 
   private
 
   def set_book
-    @book = Book.find(params[:book_id])
+    @book = Book.includes(:chapters).find(params[:book_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to root_path, alert: "Book not found"
   end
 
   def set_chapter
+    # Find the specific chapter
     @chapter = @book.chapters.find_by(chapter_number: params[:chapter_number])
     unless @chapter
       redirect_to bible_book_path(@book), alert: "Chapter not found"
     end
+
+    # Preload verses for this specific chapter (for the verse dropdown in view)
+    @chapter = Chapter.includes(:verses).find(@chapter.id)
   end
 
   def set_verse

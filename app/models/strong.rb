@@ -35,7 +35,12 @@ class Strong < ApplicationRecord
   end
 
   def verses_with_this_word
-    words.includes(verse: { chapter: :book }).map(&:verse).uniq
+    Verse.joins(:words)
+         .where(words: { strong_number: strong_number })
+         .includes(chapter: :book)
+         .distinct
+         .order('books.name, chapters.chapter_number, verses.verse_number')
+         .references(:books, :chapters)
   end
 
   def searchable_text

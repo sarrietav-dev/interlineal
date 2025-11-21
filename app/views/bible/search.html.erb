@@ -64,7 +64,8 @@
         <!-- Results Grid -->
         <div class="space-y-4 lg:space-y-6">
           <% @results.each_with_index do |verse, index| %>
-            <div class="bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400 group">
+            <% cache([verse, 'search_result', @query], expires_in: 30.minutes) do %>
+              <div class="bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400 group">
               <div class="flex items-start gap-4">
                 <!-- Result Number -->
                 <div class="flex-shrink-0">
@@ -129,7 +130,8 @@
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            <% end %>
           <% end %>
         </div>
 
