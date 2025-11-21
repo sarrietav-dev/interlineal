@@ -1,23 +1,69 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Comprehensive Strong's Concordance Fixtures
 
-one:
-  strong_number: MyText
-  greek_word: MyText
-  pronunciation: MyText
-  definition: MyText
-  definition2: MyText
-  part_of_speech: MyText
-  derivation: MyText
-  rv1909_definition: MyText
-  rv1909_word_count: MyText
+# Greek Strong's Numbers
+g2316:
+  strong_number: "2316"
+  greek_word: θεός
+  pronunciation: theos
+  definition: "a deity, especially (with 3588) the supreme Divinity"
+  definition2: "God, god"
+  part_of_speech: Noun
+  derivation: "of uncertain affinity"
+  rv1909_definition: "Dios, dios"
+  language: greek
 
-two:
-  strong_number: MyText
-  greek_word: MyText
-  pronunciation: MyText
-  definition: MyText
-  definition2: MyText
-  part_of_speech: MyText
-  derivation: MyText
-  rv1909_definition: MyText
-  rv1909_word_count: MyText
+g3056:
+  strong_number: "3056"
+  greek_word: λόγος
+  pronunciation: logos
+  definition: "something said (including the thought)"
+  definition2: "word, saying, speech"
+  part_of_speech: Noun
+  derivation: "from 3004"
+  rv1909_definition: "palabra, dicho"
+  language: greek
+
+g26:
+  strong_number: "26"
+  greek_word: ἀγάπη
+  pronunciation: agape
+  definition: "love, i.e. affection or benevolence"
+  definition2: "love, charity"
+  part_of_speech: Noun
+  derivation: "from 25"
+  rv1909_definition: "amor, caridad"
+  language: greek
+
+# Hebrew Strong's Numbers
+h430:
+  strong_number: "430"
+  hebrew_word: אֱלֹהִים
+  pronunciation: elohim
+  definition: "gods in the ordinary sense; but specifically used (in the plural thus, especially with the article) of the supreme God"
+  definition2: "God, gods"
+  part_of_speech: Noun
+  derivation: "plural of 433"
+  rv1909_definition: "Dios, dioses"
+  language: hebrew
+
+h1254:
+  strong_number: "1254"
+  hebrew_word: בָּרָא
+  pronunciation: bara
+  definition: "to create; (qualified) to cut down (a wood), select, feed (as formative processes)"
+  definition2: "create, creator"
+  part_of_speech: Verb
+  derivation: "a primitive root"
+  rv1909_definition: "crear, creador"
+  language: hebrew
+
+h8064:
+  strong_number: "8064"
+  hebrew_word: שָׁמַיִם
+  pronunciation: shamayim
+  definition: "the sky (as aloft; the dual perhaps alluding to the visible arch in which the clouds move, as well as to the higher ether where the celestial bodies revolve)"
+  definition2: "air, heaven, sky"
+  part_of_speech: Noun
+  derivation: "dual of an unused singular"
+  rv1909_definition: "cielos, cielo"
+  language: hebrew

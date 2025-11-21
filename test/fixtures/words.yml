@@ -1,17 +1,104 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Comprehensive Word Fixtures
 
-one:
-  verse: one
+# Genesis 1:1 words (Hebrew)
+genesis_1_1_word_1:
+  verse: genesis_1_1
   word_order: 1
-  strong_number: MyText
-  greek_word: MyText
-  greek_grammar: MyText
-  spanish_translation: MyText
+  strong_number: "1254"
+  hebrew_word: בָּרָא
+  hebrew_grammar: "V-Qal-Perf-3ms"
+  spanish_translation: "creó"
+  language: hebrew
 
-two:
-  verse: two
+genesis_1_1_word_2:
+  verse: genesis_1_1
+  word_order: 2
+  strong_number: "430"
+  hebrew_word: אֱלֹהִים
+  hebrew_grammar: "N-mp"
+  spanish_translation: "Dios"
+  language: hebrew
+
+genesis_1_1_word_3:
+  verse: genesis_1_1
+  word_order: 3
+  strong_number: "8064"
+  hebrew_word: שָׁמַיִם
+  hebrew_grammar: "N-mp"
+  spanish_translation: "cielos"
+  language: hebrew
+
+# John 1:1 words (Greek)
+john_1_1_word_1:
+  verse: john_1_1
   word_order: 1
-  strong_number: MyText
-  greek_word: MyText
-  greek_grammar: MyText
-  spanish_translation: MyText
+  strong_number: "3056"
+  greek_word: λόγος
+  greek_grammar: "N-NSM"
+  spanish_translation: "Verbo"
+  language: greek
+
+john_1_1_word_2:
+  verse: john_1_1
+  word_order: 2
+  strong_number: "2316"
+  greek_word: θεός
+  greek_grammar: "N-NSM"
+  spanish_translation: "Dios"
+  language: greek
+
+# John 3:16 words (Greek)
+john_3_16_word_1:
+  verse: john_3_16
+  word_order: 1
+  strong_number: "26"
+  greek_word: ἠγάπησεν
+  greek_grammar: "V-AAI-3S"
+  spanish_translation: "amó"
+  language: greek
+
+john_3_16_word_2:
+  verse: john_3_16
+  word_order: 2
+  strong_number: "2316"
+  greek_word: θεὸς
+  greek_grammar: "N-NSM"
+  spanish_translation: "Dios"
+  language: greek
+
+# Matthew 5:3 words (Greek)
+matthew_5_3_word_1:
+  verse: matthew_5_3
+  word_order: 1
+  greek_word: μακάριοι
+  greek_grammar: "A-NPM"
+  spanish_translation: "Bienaventurados"
+  language: greek
+
+matthew_5_3_word_2:
+  verse: matthew_5_3
+  word_order: 2
+  strong_number: "2316"
+  greek_word: θεοῦ
+  greek_grammar: "N-GSM"
+  spanish_translation: "Dios"
+  language: greek
+
+# Romans 8:28 words (Greek)
+romans_8_28_word_1:
+  verse: romans_8_28
+  word_order: 1
+  strong_number: "26"
+  greek_word: ἀγαπῶσιν
+  greek_grammar: "V-PAI-3P"
+  spanish_translation: "aman"
+  language: greek
+
+romans_8_28_word_2:
+  verse: romans_8_28
+  word_order: 2
+  strong_number: "2316"
+  greek_word: θεὸν
+  greek_grammar: "N-ASM"
+  spanish_translation: "Dios"
+  language: greek

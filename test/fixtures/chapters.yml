@@ -1,9 +1,37 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Comprehensive Chapter Fixtures
 
-one:
-  book: one
+genesis_chapter_1:
+  book: genesis
   chapter_number: 1
 
-two:
-  book: two
+genesis_chapter_2:
+  book: genesis
+  chapter_number: 2
+
+matthew_chapter_1:
+  book: matthew
   chapter_number: 1
+
+matthew_chapter_5:
+  book: matthew
+  chapter_number: 5
+
+matthew_chapter_6:
+  book: matthew
+  chapter_number: 6
+
+john_chapter_1:
+  book: john
+  chapter_number: 1
+
+john_chapter_3:
+  book: john
+  chapter_number: 3
+
+romans_chapter_1:
+  book: romans
+  chapter_number: 1
+
+romans_chapter_8:
+  book: romans
+  chapter_number: 8

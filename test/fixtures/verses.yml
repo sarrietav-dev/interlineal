@@ -1,11 +1,46 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Comprehensive Verse Fixtures
 
-one:
-  chapter: one
+genesis_1_1:
+  chapter: genesis_chapter_1
   verse_number: 1
-  spanish_text: MyText
+  spanish_text: "En el principio creó Dios los cielos y la tierra."
 
-two:
-  chapter: two
+genesis_1_2:
+  chapter: genesis_chapter_1
+  verse_number: 2
+  spanish_text: "Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas."
+
+genesis_1_3:
+  chapter: genesis_chapter_1
+  verse_number: 3
+  spanish_text: "Y dijo Dios: Sea la luz; y fue la luz."
+
+john_1_1:
+  chapter: john_chapter_1
   verse_number: 1
-  spanish_text: MyText
+  spanish_text: "En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios."
+
+john_1_14:
+  chapter: john_chapter_1
+  verse_number: 14
+  spanish_text: "Y aquel Verbo fue hecho carne, y habitó entre nosotros."
+
+john_3_16:
+  chapter: john_chapter_3
+  verse_number: 16
+  spanish_text: "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."
+
+matthew_5_3:
+  chapter: matthew_chapter_5
+  verse_number: 3
+  spanish_text: "Bienaventurados los pobres en espíritu, porque de ellos es el reino de los cielos."
+
+matthew_6_9:
+  chapter: matthew_chapter_6
+  verse_number: 9
+  spanish_text: "Vosotros, pues, oraréis así: Padre nuestro que estás en los cielos, santificado sea tu nombre."
+
+romans_8_28:
+  chapter: romans_chapter_8
+  verse_number: 28
+  spanish_text: "Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien, esto es, a los que conforme a su propósito son llamados."
