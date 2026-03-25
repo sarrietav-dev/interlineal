@@ -75,11 +75,11 @@ class SlideshowModeTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # Settings should be available to the view
-    word_display_settings = assigns(:word_display_settings)
-    assert_not_nil word_display_settings
-    assert_equal true, word_display_settings["show_greek"]
-    assert_equal false, word_display_settings["show_hebrew"]
-    assert_equal true, word_display_settings["show_pronunciation"]
+    settings = assigns(:settings)
+    assert_not_nil settings
+    assert_equal true, settings["show_greek"]
+    assert_equal false, settings["show_hebrew"]
+    assert_equal true, settings["show_pronunciation"]
   end
 
   test "slideshow works with Turbo Frame requests" do

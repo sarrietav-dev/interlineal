@@ -87,7 +87,8 @@ class UserSettingsFlowTest < ActionDispatch::IntegrationTest
     }, as: :turbo_stream
 
     assert_response :success
-    # Response should update the interlinear display
-    assert_match /interlinear-display/, response.body
+    assert_match /target="body"/, response.body
+    assert_match /word-settings:updated/, response.body
+    assert_match /localStorage\.setItem\('word_display_settings'/, response.body
   end
 end

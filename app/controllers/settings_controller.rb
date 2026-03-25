@@ -19,10 +19,7 @@ class SettingsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.update("settings-modal", ""),
-          turbo_stream.update("interlinear-display",
-            render_to_string(partial: "bible/interlinear_words",
-                           locals: { words: current_verse_words,
-                                   settings: @settings }))
+          settings_sync_stream(@settings)
         ]
       end
       format.html { redirect_back(fallback_location: root_path) }
@@ -37,10 +34,7 @@ class SettingsController < ApplicationController
         render turbo_stream: [
           turbo_stream.update("settings-form",
             render_to_string(partial: "settings/form", locals: { settings: @settings })),
-          turbo_stream.update("interlinear-display",
-            render_to_string(partial: "bible/interlinear_words",
-                           locals: { words: current_verse_words,
-                                   settings: @settings }))
+          settings_sync_stream(@settings)
         ]
       end
       format.html { redirect_back(fallback_location: root_path) }
@@ -73,15 +67,14 @@ class SettingsController < ApplicationController
     }
   end
 
-  def current_verse_words
-    verse_id = @verse_id || params.dig(:settings, :verse_id) || params[:verse_id]
-
-    if verse_id.present?
-      Verse.find(verse_id).words_with_strongs
-    elsif request.referer&.match(/verses\/(\d+)/)
-      Verse.find($1).words_with_strongs
-    else
-      []
-    end
+  def settings_sync_stream(settings)
+    # Keys are our hardcoded permit list; values are always booleans — safe to embed in script
+    settings_json = settings.to_json
+    script = %(<script>
+      var s = #{settings_json};
+      localStorage.setItem('word_display_settings', JSON.stringify(s));
+      document.dispatchEvent(new CustomEvent('word-settings:updated', { detail: s }));
+    </script>).html_safe
+    turbo_stream.append("body", script)
   end
 end

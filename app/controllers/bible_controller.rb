@@ -2,6 +2,7 @@ class BibleController < ApplicationController
   before_action :set_book, only: [ :show_book, :show_chapter, :show_verse, :slideshow ]
   before_action :set_chapter, only: [ :show_chapter, :show_verse, :slideshow ]
   before_action :set_verse, only: [ :show_verse, :slideshow ]
+  before_action :load_settings, only: [ :show_verse, :slideshow ]
 
   # GET /
   def index
@@ -37,6 +38,10 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number
   def show_chapter
+    return unless stale?(last_modified: @chapter.updated_at, etag: @chapter)
+
+    expires_in 1.hour, public: true, stale_while_revalidate: 1.day
+
     # Cache verse data for chapter
     @verses = Rails.cache.fetch("chapter_verses_#{@chapter.id}", expires_in: 6.hours) do
       @chapter.verses.by_number.includes(words: :strong).to_a
@@ -66,19 +71,23 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number/verses/:verse_number
   def show_verse
+    return unless stale?(last_modified: @verse.updated_at, etag: @verse)
+
+    expires_in 1.hour, public: true, stale_while_revalidate: 1.day
+
     # Fragment caching in views handles the heavy lifting
     # Just load the data with proper eager loading
     @words = @verse.words.includes(:strong).order(:word_order).to_a
     @spanish_text = @verse.spanish_text
 
     # Navigation data - cache these as they're computed
-    cache_key = ['verse_navigation', @verse.id, @chapter.id]
+    cache_key = [ "verse_navigation", @verse.id, @chapter.id ]
     @prev_verse, @next_verse, @prev_chapter, @next_chapter = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
       prev_v = @verse.previous_verse
       next_v = @verse.next_verse
       prev_c = prev_v.nil? ? @chapter.previous_chapter : nil
       next_c = next_v.nil? ? @chapter.next_chapter : nil
-      [prev_v, next_v, prev_c, next_c]
+      [ prev_v, next_v, prev_c, next_c ]
     end
 
     # Cache all books data for selectors
@@ -88,11 +97,6 @@ class BibleController < ApplicationController
 
     # For slideshow mode
     @slideshow_mode = params[:slideshow] == "true"
-
-    # Load word display settings
-    @word_display_settings = load_word_display_settings
-
-    # Using Hotwire - no JSON API needed
   end
 
   # GET /slideshow/:book_id/:chapter_number/:verse_number
@@ -102,17 +106,14 @@ class BibleController < ApplicationController
     @spanish_text = @verse.spanish_text
 
     # Reuse cached navigation
-    cache_key = ['verse_navigation', @verse.id, @chapter.id]
+    cache_key = [ "verse_navigation", @verse.id, @chapter.id ]
     @prev_verse, @next_verse, @prev_chapter, @next_chapter = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
       prev_v = @verse.previous_verse
       next_v = @verse.next_verse
       prev_c = prev_v.nil? ? @chapter.previous_chapter : nil
       next_c = next_v.nil? ? @chapter.next_chapter : nil
-      [prev_v, next_v, prev_c, next_c]
+      [ prev_v, next_v, prev_c, next_c ]
     end
-
-    # Load word display settings
-    @word_display_settings = load_word_display_settings
 
     if turbo_frame_request?
       render partial: "slideshow_content", layout: false
@@ -136,8 +137,9 @@ class BibleController < ApplicationController
     @query = params[:q]&.strip
 
     if @query.present? && @query.length >= 2
+      # Run the search first so we can use results in the ETag
       # Cache search results for 15 minutes
-      cache_key = ['bible_search', @query, I18n.locale]
+      cache_key = [ "bible_search", @query, I18n.locale ]
       @results = Rails.cache.fetch(cache_key, expires_in: 15.minutes) do
         # Use sanitized SQL for LIKE queries to prevent SQL injection
         sanitized_query = ActiveRecord::Base.sanitize_sql_like(@query)
@@ -177,24 +179,48 @@ class BibleController < ApplicationController
     end
 
     @total_results = @results.count
+
+    return unless stale?(etag: [ @query, @results.map(&:id) ])
+
+    expires_in 15.minutes, public: true
   end
 
   # GET /strongs/:strong_number
   def strong_definition
-    cache_key = ['strong_definition', params[:strong_number], I18n.locale]
+    cache_key = [ "strong_definition", params[:strong_number], I18n.locale ]
 
     @strong, @verses_with_word = Rails.cache.fetch(cache_key, expires_in: 6.hours) do
       strong = Strong.find_by(strong_number: params[:strong_number])
       if strong
         verses = strong.verses_with_this_word.limit(20).to_a
-        [strong, verses]
+        [ strong, verses ]
       else
-        [nil, []]
+        [ nil, [] ]
       end
     end
+
+    return unless stale?(last_modified: @strong&.updated_at, etag: @strong)
+
+    expires_in 1.day, public: true, stale_while_revalidate: 7.days
   end
 
   private
+
+  def load_settings
+    @settings = default_settings.merge(session.fetch(:word_display_settings, {}).to_h)
+  end
+
+  def default_settings
+    {
+      "show_greek" => true,
+      "show_hebrew" => true,
+      "show_spanish" => true,
+      "show_strongs" => true,
+      "show_grammar" => true,
+      "show_pronunciation" => false,
+      "show_word_order" => false
+    }
+  end
 
   def set_book
     @book = Book.includes(:chapters).find(params[:book_id])
@@ -217,24 +243,6 @@ class BibleController < ApplicationController
     @verse = @chapter.verses.find_by(verse_number: params[:verse_number])
     unless @verse
       redirect_to bible_chapter_path(@book, @chapter.chapter_number), alert: "Verse not found"
-    end
-  end
-
-  def load_word_display_settings
-    default_settings = {
-      "show_greek" => true,
-      "show_hebrew" => true,
-      "show_spanish" => true,
-      "show_strongs" => true,
-      "show_grammar" => true,
-      "show_pronunciation" => false,
-      "show_word_order" => false
-    }
-
-    if session[:word_display_settings].is_a?(Hash)
-      default_settings.merge(session[:word_display_settings])
-    else
-      default_settings
     end
   end
 end

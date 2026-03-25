@@ -1,17 +1,6 @@
 <!-- Interlinear Words Display - Advanced Responsive System for Mobile to 4K -->
-<div id="interlinear-words" class="interlinear-grid mt-6 lg:mt-8">
-  <%
-    # Use passed settings or fallback to defaults
-    settings ||= {
-      'show_greek' => true,
-      'show_hebrew' => true,
-      'show_spanish' => true,
-      'show_strongs' => true,
-      'show_grammar' => true,
-      'show_pronunciation' => false,
-      'show_word_order' => false
-    }
-  %>
+<div id="interlinear-words" class="interlinear-grid mt-6 lg:mt-8"
+     data-controller="word-settings">
   <% words.each_with_index do |word, word_index| %>
     <div class="interlinear-word group bg-gray-700 hover:bg-blue-600 rounded-lg p-3 lg:p-4 text-center transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg border border-gray-600 hover:border-blue-400 min-h-[120px] flex flex-col justify-between"
          <% if word.strong_number.present? %>
@@ -22,8 +11,8 @@
          <% end %>>
 
       <!-- Greek Word -->
-      <% if settings['show_greek'] && word.greek_word.present? %>
-        <div class="greek-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
+      <% if word.greek_word.present? %>
+        <div class="greek-word mb-2 lg:mb-3 flex-1 flex items-center justify-center" data-setting="show_greek">
           <% if word.strong_number.present? %>
             <%= link_to strong_definition_path(word.strong_number),
                 class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-sky-300 leading-tight hover:text-sky-200 transition-colors duration-200 break-words hyphens-auto",
@@ -40,8 +29,8 @@
       <% end %>
 
       <!-- Hebrew Word -->
-      <% if settings['show_hebrew'] && word.hebrew_word.present? %>
-        <div class="hebrew-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
+      <% if word.hebrew_word.present? %>
+        <div class="hebrew-word mb-2 lg:mb-3 flex-1 flex items-center justify-center" data-setting="show_hebrew">
           <% if word.strong_number.present? %>
             <%= link_to strong_definition_path(word.strong_number),
                 class: "block text-sm lg:text-lg xl:text-xl 2xl:text-2xl font-medium text-orange-300 leading-tight hover:text-orange-200 transition-colors duration-200 break-words hyphens-auto",
@@ -58,46 +47,42 @@
       <% end %>
 
       <!-- Spanish Translation -->
-      <% if settings['show_spanish'] %>
-        <div class="spanish-word mb-2 lg:mb-3 flex-1 flex items-center justify-center">
-          <% if word.spanish_translation.present? %>
-            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-white leading-tight break-words hyphens-auto">
-              <%= word.spanish_translation %>
-            </span>
-          <% else %>
-            <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-gray-400 leading-tight">—</span>
-          <% end %>
-        </div>
-      <% end %>
+      <div class="spanish-word mb-2 lg:mb-3 flex-1 flex items-center justify-center" data-setting="show_spanish">
+        <% if word.spanish_translation.present? %>
+          <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-white leading-tight break-words hyphens-auto">
+            <%= word.spanish_translation %>
+          </span>
+        <% else %>
+          <span class="block text-sm lg:text-base xl:text-lg 2xl:text-xl font-normal text-gray-400 leading-tight">—</span>
+        <% end %>
+      </div>
 
       <!-- Strong's Number and Grammar -->
       <div class="metadata space-y-1 mt-auto">
-        <% if settings['show_strongs'] && word.strong_number.present? %>
-          <div class="strong-number">
+        <% if word.strong_number.present? %>
+          <div class="strong-number" data-setting="show_strongs">
             <span class="inline-block bg-yellow-600 text-yellow-100 text-xs lg:text-sm font-semibold px-2 py-1 rounded-md leading-none">
               <%= word.display_strong %>
             </span>
           </div>
         <% end %>
 
-        <% if settings['show_grammar'] %>
-          <% if word.greek_grammar.present? %>
-            <div class="grammar">
-              <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
-                <%= word.greek_grammar.truncate(10) %>
-              </span>
-            </div>
-          <% elsif word.hebrew_grammar.present? %>
-            <div class="grammar">
-              <span class="inline-block bg-orange-600 text-orange-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
-                <%= word.hebrew_grammar.truncate(10) %>
-              </span>
-            </div>
-          <% end %>
+        <% if word.greek_grammar.present? %>
+          <div class="grammar" data-setting="show_grammar">
+            <span class="inline-block bg-gray-600 text-gray-200 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              <%= word.greek_grammar.truncate(10) %>
+            </span>
+          </div>
+        <% elsif word.hebrew_grammar.present? %>
+          <div class="grammar" data-setting="show_grammar">
+            <span class="inline-block bg-orange-600 text-orange-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
+              <%= word.hebrew_grammar.truncate(10) %>
+            </span>
+          </div>
         <% end %>
 
-        <% if settings['show_pronunciation'] && word.strong&.pronunciation.present? %>
-          <div class="pronunciation">
+        <% if word.strong&.pronunciation.present? %>
+          <div class="pronunciation" data-setting="show_pronunciation">
             <span class="inline-block bg-purple-600 text-purple-100 text-xs lg:text-sm font-normal px-2 py-1 rounded-md leading-none">
               /<%= word.strong.pronunciation %>/
             </span>
@@ -106,13 +91,11 @@
       </div>
 
       <!-- Word Order -->
-      <% if settings['show_word_order'] %>
-        <div class="word-order mt-2 lg:mt-3">
-          <span class="text-xs text-gray-500 font-mono">
-            #<%= word.word_order %>
-          </span>
-        </div>
-      <% end %>
+      <div class="word-order mt-2 lg:mt-3" data-setting="show_word_order">
+        <span class="text-xs text-gray-500 font-mono">
+          #<%= word.word_order %>
+        </span>
+      </div>
     </div>
   <% end %>
 </div>

@@ -163,8 +163,9 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     }, as: :turbo_stream
 
     assert_response :success
-    # Response should contain the interlinear display update
-    assert_match /interlinear-display/, response.body
+    assert_match /target="body"/, response.body
+    assert_match /word-settings:updated/, response.body
+    assert_match /localStorage\.setItem\('word_display_settings'/, response.body
   end
 
   test "should handle missing verse_id gracefully" do
