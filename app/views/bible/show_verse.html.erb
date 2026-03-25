@@ -4,63 +4,63 @@
      data-controller="bible-navigation"
      data-action="keydown@document->bible-navigation#keydown">
   <!-- Navigation Header -->
-  <nav class="bg-gray-800 rounded-lg lg:rounded-xl p-4 lg:p-6">
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+  <nav class="section-shell">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+      <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:max-w-3xl lg:gap-4">
         <!-- Book Selector -->
-          <%= select_tag :book_id,
-              options_from_collection_for_select(@all_books, :id, :full_name, @book.id),
-              {
-                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                onchange: "window.location.href = '/books/' + this.value + '/chapters/1/verses/1'",
-                "aria-label": "Select Book"
-              } %>
+        <%= select_tag :book_id,
+            options_from_collection_for_select(@all_books, :id, :full_name, @book.id),
+            {
+              class: "control-input text-base lg:text-lg",
+              onchange: "window.location.href = '/books/' + this.value + '/chapters/1/verses/1'",
+              "aria-label": "Select Book"
+            } %>
 
         <!-- Chapter Selector -->
-          <%= select_tag :chapter_number,
-              options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
-              {
-                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + this.value + '/verses/1'",
-                "aria-label": "Select Chapter"
-              } %>
+        <%= select_tag :chapter_number,
+            options_from_collection_for_select(@book.chapters.by_number, :chapter_number, :chapter_number, @chapter.chapter_number),
+            {
+              class: "control-input text-base lg:text-lg",
+              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + this.value + '/verses/1'",
+              "aria-label": "Select Chapter"
+            } %>
 
         <!-- Verse Selector -->
-          <%= select_tag :verse_number,
-              options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
-              {
-                class: "bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 text-base lg:text-xl min-w-20 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + #{@chapter.chapter_number} + '/verses/' + this.value",
-                "aria-label": "Select Verse"
-              } %>
+        <%= select_tag :verse_number,
+            options_from_collection_for_select(@chapter.verses.by_number, :verse_number, :verse_number, @verse.verse_number),
+            {
+              class: "control-input text-base lg:text-lg",
+              onchange: "window.location.href = '/books/' + #{@book.id} + '/chapters/' + #{@chapter.chapter_number} + '/verses/' + this.value",
+              "aria-label": "Select Verse"
+            } %>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+      <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 lg:max-w-3xl lg:gap-4">
         <%= link_to "📺 #{t('bible.slideshow')}", bible_slideshow_path(@book.id, @chapter.chapter_number, @verse.verse_number),
-            class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+            class: "action-button action-button-primary w-full text-sm sm:text-base lg:text-lg",
             target: "_blank",
             title: t('slideshow.fullscreen'),
             data: { nav: "slideshow" } %>
 
         <%= link_to "🔍 #{t('bible.search')}", bible_search_path,
-            class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
+            class: "action-button action-button-success w-full text-sm sm:text-base lg:text-lg" %>
 
         <%= link_to "⚙️ #{t('settings.button')}",
             settings_path(verse_id: @verse.id),
             data: { turbo_frame: "settings-modal" },
-            class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
+            class: "action-button action-button-secondary w-full text-sm sm:text-base lg:text-lg" %>
 
         <%= link_to "📖 #{t('bible.navigation')}",
             navigation_path,
             data: { turbo_frame: "navigation-modal" },
-            class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center" %>
+            class: "action-button w-full bg-purple-600 text-sm text-white hover:bg-purple-500 focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 sm:text-base lg:text-lg" %>
       </div>
     </div>
   </nav>
 
   <!-- Main Verse Display -->
-  <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-8 border border-gray-700">
+  <div class="section-shell p-5 sm:p-6 lg:p-8">
     <!-- Verse Reference -->
     <h1 class="responsive-verse-title text-yellow-400 text-center mb-6 lg:mb-8">
       <%= @verse.full_reference %>
@@ -69,7 +69,7 @@
     <!-- Spanish Text Display -->
     <% if @spanish_text.present? %>
       <% cache([@verse, 'spanish_text'], expires_in: 1.hour) do %>
-        <div class="bg-gray-700 rounded-lg p-4 lg:p-6 mb-6 lg:mb-8 border-l-4 border-yellow-400">
+        <div class="mb-6 border-l-4 border-yellow-400 bg-gray-700/80 p-4 sm:p-5 lg:mb-8 lg:p-6 rounded-r-xl">
           <p class="responsive-spanish-text text-white">
             <%= @spanish_text %>
           </p>
@@ -86,14 +86,14 @@
   </div>
 
   <!-- Navigation Controls -->
-  <nav class="bg-gray-800 rounded-lg lg:rounded-xl p-4 lg:p-6">
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+  <nav class="section-shell">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+      <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-2xl lg:gap-4">
         <!-- Previous Controls -->
         <% if @prev_verse %>
           <%= link_to "◄ #{t('bible.verse')} #{@prev_verse.verse_number}",
               bible_verse_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number),
-              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              class: "action-button w-full bg-purple-600 text-sm text-white hover:bg-purple-500 focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 sm:text-base lg:text-lg",
               title: t('navigation.previous_verse'),
               accesskey: "p",
               data: {
@@ -104,26 +104,26 @@
           <% last_verse = @prev_chapter.verses.by_number.last %>
           <%= link_to "◄ #{@prev_chapter.chapter_number}:#{last_verse.verse_number}",
               bible_verse_path(@book.id, @prev_chapter.chapter_number, last_verse.verse_number),
-              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              class: "action-button w-full bg-purple-600 text-sm text-white hover:bg-purple-500 focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 sm:text-base lg:text-lg",
               title: "Previous chapter",
               accesskey: "p" %>
         <% else %>
-          <button class="bg-gray-600 text-gray-400 font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl min-w-32 text-center cursor-not-allowed" disabled>◄ <%= t('navigation.previous') %></button>
+          <button class="action-button w-full cursor-not-allowed bg-gray-700 text-sm text-gray-400 opacity-70 sm:text-base lg:text-lg" disabled>◄ <%= t('navigation.previous') %></button>
         <% end %>
 
         <!-- Chapter View -->
         <%= link_to "📖 #{t('bible.chapter')} #{@chapter.chapter_number}",
             bible_chapter_path(@book.id, @chapter.chapter_number),
-            class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+            class: "action-button action-button-secondary w-full text-sm sm:text-base lg:text-lg",
             title: t('navigation.view_chapter') %>
       </div>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+      <div class="grid w-full grid-cols-1 gap-3 sm:max-w-sm lg:gap-4">
         <!-- Next Controls -->
         <% if @next_verse %>
           <%= link_to "#{t('bible.verse')} #{@next_verse.verse_number} ►",
               bible_verse_path(@book.id, @chapter.chapter_number, @next_verse.verse_number),
-              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              class: "action-button w-full bg-purple-600 text-sm text-white hover:bg-purple-500 focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 sm:text-base lg:text-lg",
               title: t('navigation.next_verse'),
               accesskey: "n",
               data: {
@@ -133,11 +133,11 @@
         <% elsif @next_chapter %>
           <%= link_to "#{@next_chapter.chapter_number}:1 ►",
               bible_verse_path(@book.id, @next_chapter.chapter_number, 1),
-              class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200 min-w-32 text-center",
+              class: "action-button w-full bg-purple-600 text-sm text-white hover:bg-purple-500 focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 sm:text-base lg:text-lg",
               title: "Next chapter",
               accesskey: "n" %>
         <% else %>
-          <button class="bg-gray-600 text-gray-400 font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl min-w-32 text-center cursor-not-allowed" disabled><%= t('navigation.next') %> ►</button>
+          <button class="action-button w-full cursor-not-allowed bg-gray-700 text-sm text-gray-400 opacity-70 sm:text-base lg:text-lg" disabled><%= t('navigation.next') %> ►</button>
         <% end %>
       </div>
     </div>

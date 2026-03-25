@@ -9,6 +9,10 @@ export default class extends Controller {
     this.hintsTimeout = null
     this.cursorTimeout = null
     this.isNavigating = false
+    this.isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    this.handleFrameLoad = this.resetAfterNavigation.bind(this)
+    this.handleTurboLoad = this.resetAfterNavigation.bind(this)
     
     // Setup scroll indicator
     this.setupScrollIndicator()
@@ -22,22 +26,32 @@ export default class extends Controller {
     }, 1000)
     
     this.showCursor()
+    if (this.isTouchDevice) {
+      this.showControls()
+    }
     
     // Listen for Turbo frame loads to reset navigation state
-    document.addEventListener('turbo:frame-load', (event) => {
-      this.isNavigating = false
-    })
+    document.addEventListener('turbo:frame-load', this.handleFrameLoad)
     
     // Also listen for turbo:load to reset on full page loads
-    document.addEventListener('turbo:load', () => {
-      this.isNavigating = false
-    })
+    document.addEventListener('turbo:load', this.handleTurboLoad)
   }
 
   disconnect() {
     this.clearTimeouts()
     this.removeScrollListener()
+    document.removeEventListener('turbo:frame-load', this.handleFrameLoad)
+    document.removeEventListener('turbo:load', this.handleTurboLoad)
     this.isNavigating = false
+  }
+
+  resetAfterNavigation() {
+    this.isNavigating = false
+    this.removeScrollListener()
+    this.setupScrollIndicator()
+    if (this.isTouchDevice) {
+      this.showControls()
+    }
   }
 
   // Setup scroll indicator and listener
@@ -70,10 +84,12 @@ export default class extends Controller {
     this.showScrollIndicator()
     this.clearTimeouts()
     
-    this.controlsTimeout = setTimeout(() => {
-      this.hideControls()
-      this.hideScrollIndicator()
-    }, 2000)
+    if (!this.isTouchDevice) {
+      this.controlsTimeout = setTimeout(() => {
+        this.hideControls()
+        this.hideScrollIndicator()
+      }, 2000)
+    }
   }
 
   // Update scroll indicator position and visibility
@@ -120,6 +136,10 @@ export default class extends Controller {
     this.showControls()
     this.showHints()
     this.showCursor()
+
+    if (this.isTouchDevice) {
+      return
+    }
     
     this.clearTimeouts()
     
@@ -130,6 +150,17 @@ export default class extends Controller {
     this.hintsTimeout = setTimeout(() => {
       this.hideHints()
     }, 5000)
+  }
+
+  touchstart() {
+    this.showControls()
+    this.showHints()
+    this.showScrollIndicator()
+
+    clearTimeout(this.hintsTimeout)
+    this.hintsTimeout = setTimeout(() => {
+      this.hideHints()
+    }, 4000)
   }
 
   // Enhanced keyboard navigation for slideshow with scroll controls
@@ -258,6 +289,11 @@ export default class extends Controller {
 
   // Show cursor
   showCursor() {
+    if (this.isTouchDevice) {
+      document.body.style.cursor = 'default'
+      return
+    }
+
     document.body.style.cursor = 'default'
     clearTimeout(this.cursorTimeout)
     this.cursorTimeout = setTimeout(() => {
@@ -302,17 +338,19 @@ export default class extends Controller {
     
     container.scrollTo({
       top: targetScroll,
-      behavior: 'smooth'
+      behavior: this.prefersReducedMotion ? 'auto' : 'smooth'
     })
     
     // Show controls briefly when scrolling
     this.showControls()
     this.showScrollIndicator()
     this.clearTimeouts()
-    this.controlsTimeout = setTimeout(() => {
-      this.hideControls()
-      this.hideScrollIndicator()
-    }, 2000)
+    if (!this.isTouchDevice) {
+      this.controlsTimeout = setTimeout(() => {
+        this.hideControls()
+        this.hideScrollIndicator()
+      }, 2000)
+    }
     
     // Update scroll indicator after animation completes
     setTimeout(() => {
@@ -326,16 +364,18 @@ export default class extends Controller {
     
     container.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: this.prefersReducedMotion ? 'auto' : 'smooth'
     })
     
     this.showControls()
     this.showScrollIndicator()
     this.clearTimeouts()
-    this.controlsTimeout = setTimeout(() => {
-      this.hideControls()
-      this.hideScrollIndicator()
-    }, 2000)
+    if (!this.isTouchDevice) {
+      this.controlsTimeout = setTimeout(() => {
+        this.hideControls()
+        this.hideScrollIndicator()
+      }, 2000)
+    }
     
     // Update scroll indicator after animation completes
     setTimeout(() => {
@@ -349,16 +389,18 @@ export default class extends Controller {
     
     container.scrollTo({
       top: container.scrollHeight,
-      behavior: 'smooth'
+      behavior: this.prefersReducedMotion ? 'auto' : 'smooth'
     })
     
     this.showControls()
     this.showScrollIndicator()
     this.clearTimeouts()
-    this.controlsTimeout = setTimeout(() => {
-      this.hideControls()
-      this.hideScrollIndicator()
-    }, 2000)
+    if (!this.isTouchDevice) {
+      this.controlsTimeout = setTimeout(() => {
+        this.hideControls()
+        this.hideScrollIndicator()
+      }, 2000)
+    }
     
     // Update scroll indicator after animation completes
     setTimeout(() => {

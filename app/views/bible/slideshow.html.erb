@@ -23,16 +23,23 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   <style>
+    html {
+      color-scheme: dark;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      background:
+        radial-gradient(circle at top, rgba(250, 204, 21, 0.14), transparent 26%),
+        linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       color: white;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
       overflow-y: auto;
       cursor: none;
       height: 100vh;
+      overscroll-behavior: contain;
     }
 
     .slideshow-container {
@@ -42,7 +49,12 @@
       align-items: center;
       min-height: 100vh;
       max-height: 100vh;
-      padding: 2rem;
+      width: 100%;
+      padding:
+        max(1rem, env(safe-area-inset-top))
+        max(1rem, env(safe-area-inset-right))
+        max(6rem, calc(env(safe-area-inset-bottom) + 5rem))
+        max(1rem, env(safe-area-inset-left));
       text-align: center;
       position: relative;
       overflow-y: auto;
@@ -60,38 +72,44 @@
       flex-shrink: 0;
       text-align: center;
       letter-spacing: clamp(-0.02em, 0.1vw, 0.02em);
+      text-wrap: balance;
     }
 
     .spanish-text {
       font-size: clamp(1.25rem, 4vw, 6rem);
       line-height: clamp(1.4, 1.6, 1.8);
-      max-width: clamp(85vw, 90vw, 95vw);
+      max-width: min(94vw, 70rem);
       margin-bottom: clamp(2rem, 4vh, 5rem);
       text-shadow: clamp(1px, 0.2vw, 3px) clamp(1px, 0.2vw, 3px) clamp(1px, 0.3vw, 6px) rgba(0,0,0,0.6);
       font-weight: 400;
       flex-shrink: 0;
       text-align: center;
       letter-spacing: clamp(-0.01em, 0.05vw, 0.01em);
+      text-wrap: pretty;
     }
 
     .interlinear-container {
       width: 100%;
-      max-width: 95vw;
+      max-width: min(96vw, 100rem);
       margin-bottom: 2rem;
       flex-shrink: 0;
     }
 
     .controls {
       position: fixed;
-      bottom: 2rem;
+      bottom: max(1rem, env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
       display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
       gap: 1rem;
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: 100;
       flex-shrink: 0;
+      width: min(92vw, 72rem);
     }
 
     .controls.visible {
@@ -99,6 +117,9 @@
     }
 
     .control-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       background: rgba(59, 130, 246, 0.9);
       color: white;
       border: none;
@@ -107,13 +128,22 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
       backdrop-filter: blur(10px);
+      min-height: 3rem;
+      min-width: 3rem;
+      touch-action: manipulation;
+      text-decoration: none;
     }
 
     .control-btn:hover {
       background: rgba(59, 130, 246, 1);
       transform: translateY(-2px);
+    }
+
+    .control-btn:focus-visible {
+      outline: 2px solid rgba(250, 204, 21, 0.95);
+      outline-offset: 3px;
     }
 
     .control-btn:disabled {
@@ -130,6 +160,8 @@
       color: rgba(255, 255, 255, 0.7);
       opacity: 0;
       transition: opacity 0.3s ease;
+      max-width: min(24rem, calc(100vw - 2rem));
+      text-align: right;
     }
 
     .navigation-hint.visible {
@@ -139,7 +171,35 @@
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .slideshow-container {
-        padding: 1rem;
+        padding-top: max(1rem, env(safe-area-inset-top));
+        padding-right: max(0.875rem, env(safe-area-inset-right));
+        padding-left: max(0.875rem, env(safe-area-inset-left));
+      }
+
+      .controls {
+        width: calc(100vw - 1rem);
+        gap: 0.5rem;
+        padding: 0.5rem;
+      }
+
+      .control-btn {
+        flex: 1 1 calc(50% - 0.25rem);
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+      }
+
+      .navigation-hint {
+        top: auto;
+        bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 5.5rem);
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        text-align: center;
+        width: calc(100vw - 2rem);
+      }
+
+      .scroll-indicator {
+        display: none;
       }
     }
 
@@ -165,7 +225,7 @@
       backdrop-filter: blur(2px);
 
       /* Better hover states for slideshow */
-      transition: all 0.3s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       /* Improved sizing and spacing for slideshow */
       padding: clamp(0.75rem, 2vw, 1.5rem);
@@ -264,8 +324,10 @@
     .controls {
       backdrop-filter: blur(10px);
       background: rgba(31, 41, 55, 0.9);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 0.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
     }
 
     /* Scroll indicator for long verses */
@@ -291,13 +353,38 @@
       width: 100%;
       background: rgba(59, 130, 246, 0.8);
       border-radius: 2px;
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease, height 0.3s ease;
       min-height: 20%;
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      body {
+        cursor: default;
+      }
+
+      .controls {
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .controls,
+      .navigation-hint,
+      .scroll-indicator,
+      .scroll-indicator-thumb,
+      .control-btn,
+      .slideshow-container .interlinear-word {
+        transition: none !important;
+      }
+
+      .slideshow-container {
+        scroll-behavior: auto;
+      }
     }
   </style>
 </head>
   <body data-controller="slideshow"
-        data-action="mousemove->slideshow#mousemove keydown@document->slideshow#keydown">
+        data-action="mousemove->slideshow#mousemove touchstart->slideshow#touchstart keydown@document->slideshow#keydown">
   <%= render 'slideshow_content' %>
 
   <!-- Navigation Hint -->

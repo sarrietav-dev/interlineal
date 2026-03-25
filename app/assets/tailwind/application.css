@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(250, 204, 21, 0.12), transparent 28%),
+      linear-gradient(180deg, rgb(3 7 18) 0%, rgb(17 24 39) 100%);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen bg-gray-950 text-white;
+  }
+
+  .app-safe-x {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .app-safe-y {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .surface-card {
+    @apply rounded-2xl border border-white/10 bg-gray-800/88 shadow-[0_18px_50px_rgba(0,0,0,0.28)];
+  }
+
+  .control-input {
+    @apply min-h-12 w-full rounded-xl border border-gray-600 bg-gray-700/90 px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60;
+  }
+
+  .action-button {
+    @apply inline-flex min-h-12 items-center justify-center rounded-xl px-4 py-3 text-center text-sm font-semibold transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950;
+  }
+
+  .action-button-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-500 focus-visible:ring-blue-400;
+  }
+
+  .action-button-secondary {
+    @apply bg-gray-700 text-white hover:bg-gray-600 focus-visible:ring-gray-300;
+  }
+
+  .action-button-accent {
+    @apply bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:ring-yellow-300;
+  }
+
+  .action-button-success {
+    @apply bg-green-600 text-white hover:bg-green-500 focus-visible:ring-green-300;
+  }
+
+  .action-button-ghost {
+    @apply bg-white/5 text-gray-200 hover:bg-white/10 focus-visible:ring-white/40;
+  }
+
+  .section-shell {
+    @apply rounded-2xl border border-white/10 bg-gray-800/88 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:p-5 lg:p-6;
+  }
+
+  .modal-panel {
+    @apply w-full overflow-y-auto rounded-2xl border-2 border-white/10 bg-gray-800/88 p-5 shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:p-6 lg:p-8;
+    max-height: min(90vh, 52rem);
+  }
+}

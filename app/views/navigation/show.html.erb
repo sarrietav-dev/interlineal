@@ -1,26 +1,27 @@
 <%= turbo_frame_tag "navigation-modal" do %>
-  <div class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
+  <div class="fixed inset-0 z-50 flex items-end justify-center bg-black/80 p-3 sm:items-center sm:p-4"
        data-controller="modal"
        data-modal-target="backdrop"
        data-action="click->modal#closeOnOutside keydown@document->modal#handleEscape">
 
-    <div class="bg-gray-800 border-2 border-blue-400 rounded-xl p-6 lg:p-8 max-w-2xl w-full mx-4 shadow-2xl"
+    <div class="modal-panel border-blue-400 max-w-2xl"
          onclick="event.stopPropagation()">
 
-      <div class="flex justify-between items-center mb-6 lg:mb-8">
-        <h2 class="text-2xl lg:text-3xl font-bold text-blue-400">
+      <div class="mb-6 flex items-start justify-between gap-4 lg:mb-8">
+        <h2 class="text-2xl font-bold text-blue-400 lg:text-3xl text-balance">
           📖 <%= t('bible.navigation') %>
         </h2>
 
         <%= button_to "✕",
             close_navigation_path,
             method: :get,
-            class: "text-gray-400 hover:text-white text-2xl font-bold leading-none bg-transparent border-none cursor-pointer",
+            class: "action-button action-button-ghost min-h-11 min-w-11 shrink-0 px-0 text-xl leading-none",
             title: "Close",
+            "aria-label": "Close navigation",
             data: { turbo_stream: true } %>
       </div>
 
-      <p class="text-base lg:text-lg text-gray-300 mb-6">
+      <p class="mb-6 text-base text-gray-300 lg:text-lg">
         <%= t('navigation.description') %>
       </p>
 

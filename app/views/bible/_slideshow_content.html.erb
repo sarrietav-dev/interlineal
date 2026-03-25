@@ -21,7 +21,7 @@
   </div>
 
   <!-- Navigation Controls -->
-  <div class="controls" data-slideshow-target="controls">
+  <div class="controls" data-slideshow-target="controls" role="toolbar" aria-label="Slideshow controls">
     <% if @prev_verse %>
       <%= link_to "◄ #{t('bible.verse')} #{@prev_verse.verse_number}",
           bible_slideshow_path(@book.id, @chapter.chapter_number, @prev_verse.verse_number),

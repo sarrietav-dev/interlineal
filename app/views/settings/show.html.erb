@@ -1,40 +1,41 @@
 <%= turbo_frame_tag "settings-modal" do %>
 
-  <div class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
+  <div class="fixed inset-0 z-50 flex items-end justify-center bg-black/80 p-3 sm:items-center sm:p-4"
        data-controller="modal"
        data-modal-target="backdrop"
        data-action="click->modal#closeOnOutside keydown@document->modal#handleEscape">
 
-    <div class="bg-gray-800 border-2 border-yellow-400 rounded-xl p-6 lg:p-8 max-w-2xl w-full mx-4 shadow-2xl"
+    <div class="modal-panel border-yellow-400 max-w-2xl"
          onclick="event.stopPropagation()">
 
-      <div class="flex justify-between items-center mb-6 lg:mb-8">
-        <h2 class="text-2xl lg:text-3xl font-bold text-yellow-400">
+      <div class="mb-6 flex items-start justify-between gap-4 lg:mb-8">
+        <h2 class="text-2xl font-bold text-yellow-400 lg:text-3xl text-balance">
           ⚙️ <%= t('settings.title') %>
         </h2>
 
         <%= button_to "✕",
             close_settings_path,
             method: :get,
-            class: "text-gray-400 hover:text-white text-2xl font-bold leading-none bg-transparent border-none cursor-pointer",
+            class: "action-button action-button-ghost min-h-11 min-w-11 shrink-0 px-0 text-xl leading-none",
             title: t('settings.close'),
+            "aria-label": t('settings.close'),
             data: { turbo_stream: true } %>
       </div>
 
-      <p class="text-base lg:text-lg text-gray-300 mb-6">
+      <p class="mb-6 text-base text-gray-300 lg:text-lg">
         <%= t('settings.description') %>
       </p>
 
       <%= render "settings/form", settings: @settings %>
 
-      <div class="mt-8 lg:mt-12 flex flex-col sm:flex-row gap-3 lg:gap-4 justify-end">
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end lg:mt-12 lg:gap-4">
         <%= link_to "🔄 #{t('settings.reset_defaults')}",
             reset_settings_path,
-            class: "bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200",
+            class: "action-button action-button-accent w-full sm:w-auto text-sm sm:text-base lg:text-lg",
             data: { "turbo-method": :patch } %>
 
         <button type="submit" form="settings-form"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-base lg:text-xl transition-colors duration-200">
+            class="action-button action-button-primary w-full sm:w-auto text-sm sm:text-base lg:text-lg">
           ✓ <%= t('settings.done') %>
         </button>
       </div>

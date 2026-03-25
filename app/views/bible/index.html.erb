@@ -1,26 +1,30 @@
 <% content_for :title, "Biblia Interlineal - Inicio" %>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+<div class="space-y-8 lg:space-y-12">
   <!-- Header Section -->
-  <div class="text-center py-8 lg:py-16">
-    <h1 class="text-3xl lg:text-6xl xl:text-7xl font-bold text-yellow-400 mb-4 lg:mb-8">
+  <section class="section-shell overflow-hidden py-8 text-center lg:py-14">
+    <div class="mx-auto max-w-4xl space-y-4 lg:space-y-6">
+      <p class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">
+        Estudio Bíblico Interactivo
+      </p>
+      <h1 class="text-3xl font-bold text-yellow-400 sm:text-5xl lg:text-6xl xl:text-7xl text-balance">
       📖 Biblia Interlineal
-    </h1>
-    <p class="text-lg lg:text-2xl xl:text-3xl text-gray-300 mb-8 lg:mb-12 max-w-4xl mx-auto leading-relaxed">
-      Estudio palabra por palabra del Nuevo Testamento<br class="hidden lg:block">
-      <span class="text-sky-300">Griego → Español</span> con códigos Strong
-    </p>
-  </div>
+      </h1>
+      <p class="mx-auto max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg lg:text-2xl xl:text-3xl">
+        Estudio palabra por palabra del Nuevo Testamento<br class="hidden lg:block">
+        <span class="text-sky-300">Griego → Español</span> con códigos Strong
+      </p>
+    </div>
+  </section>
 
   <!-- Quick Start Section -->
-  <div class="max-w-6xl mx-auto px-4 lg:px-8">
-    <div class="bg-gray-800 rounded-lg lg:rounded-xl p-6 lg:p-12 border border-gray-700 mb-8 lg:mb-16">
-      <h2 class="text-2xl lg:text-4xl font-bold text-white mb-6 lg:mb-10 text-center">
+  <section class="section-shell p-5 sm:p-6 lg:p-10">
+      <h2 class="mb-6 text-center text-2xl font-bold text-white lg:mb-10 lg:text-4xl text-balance">
         🚀 Comenzar Estudio
       </h2>
 
       <% if @books.present? %>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-8 xl:gap-12">
           <!-- Book Selection -->
           <div class="space-y-4 lg:space-y-6">
             <h3 class="text-xl lg:text-2xl font-semibold text-yellow-400 mb-4">
@@ -31,16 +35,16 @@
                 <% @books.first(10).each do |book| %>
                   <% cache(book, expires_in: 12.hours) do %>
                     <a href="<%= bible_book_path(book.id) %>"
-                       class="block bg-gray-700 hover:bg-blue-600 rounded-lg p-4 lg:p-6 transition-all duration-300 transform hover:scale-105 border border-gray-600 hover:border-blue-400">
-                      <div class="flex justify-between items-center">
-                        <span class="text-lg lg:text-xl font-semibold text-white">
+                       class="block rounded-2xl border border-gray-600 bg-gray-700/80 p-4 transition hover:border-blue-400 hover:bg-blue-600/80 lg:p-5">
+                      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <span class="text-lg font-semibold text-white lg:text-xl break-words">
                           <%= book.name %>
                         </span>
-                        <span class="text-sm lg:text-base text-gray-300">
+                        <span class="text-sm text-gray-300 lg:text-base">
                           <%= book.chapter_count %> <%= book.chapter_count == 1 ? 'capítulo' : 'capítulos' %>
                         </span>
                       </div>
-                      <span class="text-sm lg:text-base text-gray-400 mt-2 block">
+                      <span class="mt-2 block text-sm text-gray-400 lg:text-base">
                         <%= book.abbreviation %> • <%= book.testament == 'NT' ? 'Nuevo Testamento' : 'Antiguo Testamento' %>
                       </span>
                     </a>
@@ -57,62 +61,64 @@
             </h3>
 
             <!-- Go to specific verse -->
-            <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
+            <div class="rounded-2xl border border-gray-600 bg-gray-700/80 p-4 lg:p-6">
               <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
                 🎯 Ir a Versículo Específico
               </h4>
               <%= form_with url: root_path, method: :get, local: true, class: "space-y-3" do |f| %>
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <%= select_tag :book_id,
                       options_from_collection_for_select(@books, :id, :abbreviation, @current_book&.id),
                       {
-                        class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
+                        class: "control-input text-sm lg:text-base",
                         prompt: "Libro"
                       } %>
                   <%= number_field_tag :chapter, nil,
                       {
-                        class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
-                        placeholder: "Cap.",
+                        class: "control-input text-sm lg:text-base",
+                        placeholder: "Cap.…",
+                        inputmode: "numeric",
                         min: 1
                       } %>
                   <%= number_field_tag :verse, nil,
                       {
-                        class: "bg-gray-600 text-white border border-gray-500 rounded-lg px-3 py-2 text-sm lg:text-base focus:ring-2 focus:ring-blue-500",
-                        placeholder: "Ver.",
+                        class: "control-input text-sm lg:text-base",
+                        placeholder: "Ver.…",
+                        inputmode: "numeric",
                         min: 1
                       } %>
                 </div>
                 <%= submit_tag "Ir →",
-                    class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-base lg:text-lg transition-colors duration-200" %>
+                    class: "action-button action-button-primary w-full text-sm sm:text-base lg:text-lg" %>
               <% end %>
             </div>
 
             <!-- Search -->
-            <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
+            <div class="rounded-2xl border border-gray-600 bg-gray-700/80 p-4 lg:p-6">
               <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
                 🔍 Buscar en las Escrituras
               </h4>
               <%= form_with url: bible_search_path, method: :get, local: true, class: "space-y-3" do |f| %>
                 <%= text_field_tag :q, nil,
                     {
-                      class: "w-full bg-gray-600 text-white border border-gray-500 rounded-lg px-4 py-3 text-base lg:text-lg focus:ring-2 focus:ring-green-500",
-                      placeholder: "Buscar palabras, versículos o Strong's...",
+                      class: "control-input text-base lg:text-lg",
+                      placeholder: "Buscar palabras, versículos o Strong's…",
                       autocomplete: "off"
                     } %>
                 <%= submit_tag "🔍 Buscar",
-                    class: "w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg text-base lg:text-lg transition-colors duration-200" %>
+                    class: "action-button action-button-success w-full text-sm sm:text-base lg:text-lg" %>
               <% end %>
             </div>
 
             <!-- Sample verses -->
             <% if @current_verse %>
-              <div class="bg-gray-700 rounded-lg p-4 lg:p-6 border border-gray-600">
+              <div class="rounded-2xl border border-gray-600 bg-gray-700/80 p-4 lg:p-6">
                 <h4 class="text-lg lg:text-xl font-semibold text-white mb-3">
                   📖 Verso de Muestra
                 </h4>
                 <a href="<%= bible_verse_path(@current_verse.book.id, @current_verse.chapter.chapter_number, @current_verse.verse_number) %>"
-                   class="block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center text-base lg:text-lg transition-colors duration-200">
-                  Ver <%= @current_verse.full_reference %> →
+                   class="action-button action-button-primary w-full text-sm sm:text-base lg:text-lg">
+                   Ver <%= @current_verse.full_reference %> →
                 </a>
               </div>
             <% end %>
@@ -131,18 +137,17 @@
           </p>
         </div>
       <% end %>
-    </div>
-  </div>
+  </section>
 
   <!-- Features Section -->
-  <div class="max-w-6xl mx-auto px-4 lg:px-8 pb-12 lg:pb-24">
-    <h2 class="text-2xl lg:text-4xl font-bold text-white mb-8 lg:mb-12 text-center">
+  <section class="pb-4 lg:pb-8">
+    <h2 class="mb-8 text-center text-2xl font-bold text-white lg:mb-12 lg:text-4xl text-balance">
       ✨ Características Principales
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
       <!-- Interlinear Display -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">🔤</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Texto Interlineal
@@ -153,7 +158,7 @@
       </div>
 
       <!-- Strong's Concordance -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">📋</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Códigos Strong
@@ -164,7 +169,7 @@
       </div>
 
       <!-- TV Presentation -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">📺</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Modo Presentación
@@ -175,7 +180,7 @@
       </div>
 
       <!-- Search -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">🔍</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Búsqueda Avanzada
@@ -186,7 +191,7 @@
       </div>
 
       <!-- Navigation -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">⌨️</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Navegación por Teclado
@@ -197,7 +202,7 @@
       </div>
 
       <!-- Responsive -->
-      <div class="bg-gray-800 rounded-lg p-6 lg:p-8 border border-gray-700 text-center">
+      <div class="section-shell text-center">
         <div class="text-4xl lg:text-5xl mb-4">📱</div>
         <h3 class="text-lg lg:text-xl font-semibold text-yellow-400 mb-3">
           Diseño Responsivo
@@ -207,7 +212,7 @@
         </p>
       </div>
     </div>
-  </div>
+  </section>
 </div>
 
 <script>
