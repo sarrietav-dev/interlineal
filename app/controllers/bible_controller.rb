@@ -38,7 +38,7 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number
   def show_chapter
-    return unless stale?(last_modified: @chapter.updated_at, etag: @chapter)
+    return unless stale?(last_modified: http_cache_last_modified(@chapter), etag: http_cache_etag(@chapter, "chapter"))
 
     expires_in 1.hour, public: true, stale_while_revalidate: 1.day
 
@@ -71,7 +71,7 @@ class BibleController < ApplicationController
 
   # GET /books/:book_id/chapters/:chapter_number/verses/:verse_number
   def show_verse
-    return unless stale?(last_modified: @verse.updated_at, etag: @verse)
+    return unless stale?(last_modified: http_cache_last_modified(@verse), etag: http_cache_etag(@verse, "verse"))
 
     expires_in 1.hour, public: true, stale_while_revalidate: 1.day
 
@@ -199,7 +199,7 @@ class BibleController < ApplicationController
       end
     end
 
-    return unless stale?(last_modified: @strong&.updated_at, etag: @strong)
+    return unless stale?(last_modified: http_cache_last_modified(@strong), etag: http_cache_etag(@strong, "strong_definition", fallback: params[:strong_number]))
 
     expires_in 1.day, public: true, stale_while_revalidate: 7.days
   end
@@ -220,6 +220,24 @@ class BibleController < ApplicationController
       "show_pronunciation" => false,
       "show_word_order" => false
     }
+  end
+
+  def http_cache_last_modified(record)
+    return unless record
+
+    return record.updated_at if record.respond_to?(:updated_at) && record.updated_at.present?
+    return record.created_at if record.respond_to?(:created_at) && record.created_at.present?
+
+    nil
+  end
+
+  def http_cache_etag(record, namespace, fallback: nil)
+    return [ namespace, fallback || "missing" ].join("/") unless record
+
+    cache_components = [ namespace, record.class.name, record.id || record.to_param ]
+    last_modified = http_cache_last_modified(record)
+    cache_components << last_modified.to_i if last_modified.present?
+    cache_components.join("/")
   end
 
   def set_book

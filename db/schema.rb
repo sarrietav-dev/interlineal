@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_21_145347) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_25_174300) do
   create_table "books", force: :cascade do |t|
-    t.text "name", null: false
     t.text "abbreviation"
-    t.text "testament"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.text "name", null: false
+    t.text "testament"
     t.datetime "updated_at"
   end
 
@@ -29,18 +29,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_145347) do
   end
 
   create_table "strongs", force: :cascade do |t|
-    t.text "strong_number", null: false
-    t.text "greek_word"
-    t.text "hebrew_word"
-    t.text "pronunciation"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
     t.text "definition"
     t.text "definition2"
-    t.text "part_of_speech"
     t.text "derivation"
+    t.text "greek_word"
+    t.text "hebrew_word"
+    t.text "language"
+    t.text "part_of_speech"
+    t.text "pronunciation"
     t.text "rv1909_definition"
     t.text "rv1909_word_count"
-    t.text "language"
-    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.text "strong_number", null: false
     t.datetime "updated_at"
     t.index ["definition"], name: "index_strongs_on_definition"
     t.index ["definition2"], name: "index_strongs_on_definition2"
@@ -50,27 +50,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_145347) do
 
   create_table "verses", force: :cascade do |t|
     t.integer "chapter_id"
-    t.integer "verse_number"
-    t.text "spanish_text"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.text "spanish_text"
     t.datetime "updated_at"
+    t.integer "verse_number"
     t.index ["chapter_id", "verse_number"], name: "index_verses_on_chapter_id_and_verse_number"
     t.index ["chapter_id"], name: "index_verses_on_chapter_id"
     t.index ["spanish_text"], name: "index_verses_on_spanish_text"
   end
 
   create_table "words", force: :cascade do |t|
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.text "greek_grammar"
+    t.text "greek_word"
+    t.text "hebrew_grammar"
+    t.text "hebrew_word"
+    t.text "language"
+    t.text "spanish_translation"
+    t.text "strong_number"
+    t.datetime "updated_at"
     t.integer "verse_id"
     t.integer "word_order"
-    t.text "strong_number"
-    t.text "greek_word"
-    t.text "hebrew_word"
-    t.text "greek_grammar"
-    t.text "hebrew_grammar"
-    t.text "spanish_translation"
-    t.text "language"
-    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
     t.index ["greek_word"], name: "index_words_on_greek_word"
     t.index ["hebrew_word"], name: "idx_words_hebrew_word"
     t.index ["language"], name: "idx_words_language"
