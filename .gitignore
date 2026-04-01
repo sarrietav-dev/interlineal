@@ -39,3 +39,6 @@ juan_sites/juan_interlineal/
 juan_sites/strong
 juan_sites/node_modules
 juan_sites/target
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
