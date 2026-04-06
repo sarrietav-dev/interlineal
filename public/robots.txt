@@ -1,1 +1,8 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+# Slow down all bots
+User-agent: *
+Crawl-delay: 30
+
+# Allow access to all content
+Disallow:
