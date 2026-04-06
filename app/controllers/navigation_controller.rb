@@ -2,6 +2,8 @@ class NavigationController < ApplicationController
   before_action :load_navigation_data, except: [ :close ]
 
   def show
+    # Cache navigation modal for 1 hour - data rarely changes
+    expires_in 1.hour, public: true, stale_while_revalidate: 6.hours
   end
 
   def update

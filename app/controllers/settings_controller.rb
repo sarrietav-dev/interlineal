@@ -2,6 +2,8 @@ class SettingsController < ApplicationController
   before_action :load_settings
 
   def show
+    # Cache settings modal for 1 hour - static form
+    expires_in 1.hour, public: true, stale_while_revalidate: 6.hours
   end
 
   def update

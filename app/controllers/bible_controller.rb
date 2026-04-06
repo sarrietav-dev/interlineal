@@ -101,6 +101,10 @@ class BibleController < ApplicationController
 
   # GET /slideshow/:book_id/:chapter_number/:verse_number
   def slideshow
+    return unless stale?(last_modified: http_cache_last_modified(@verse), etag: http_cache_etag(@verse, "slideshow"))
+
+    expires_in 1.hour, public: true, stale_while_revalidate: 1.day
+
     # Reuse data loading from show_verse
     @words = @verse.words.includes(:strong).order(:word_order).to_a
     @spanish_text = @verse.spanish_text
