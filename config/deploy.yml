@@ -2,7 +2,7 @@
 service: interlineal
 
 # Name of the container image.
-image: sarrietav-dev/interlineal
+image: sebas/interlineal
 
 # Deploy to these servers.
 servers:
@@ -23,10 +23,11 @@ proxy:
 
 # Credentials for your image host.
 registry:
-  # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  server: ghcr.io
-  username: sarrietav-dev
+  # Alternatives: hub.docker.com / registry.digitalocean.com / ghcr.io / ...
+  server: git.sarrietav.dev
+
+  # Needed for authenticated registries.
+  username: sebas
 
   # Always use an access token rather than real password when possible.
   password:
